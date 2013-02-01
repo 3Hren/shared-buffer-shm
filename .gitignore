@@ -1,0 +1,11 @@
+#[Common]
+*.o
+Makefile
+/bin/
+
+#[Project Specific]
+*.pro.user*
+
+#[Qt]
+moc_*
+
