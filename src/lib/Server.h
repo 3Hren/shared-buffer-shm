@@ -8,11 +8,12 @@
 class Server : public QObject
 {
     Q_OBJECT
-    QString name;
-    BufferId buffersCount;
-    BufferSize bufferSize;
+    const QString name;
+    const BufferId buffersCount;
+    const BufferSize bufferSize;
     QSharedMemory *shared;
 public:
     Server(const QString &name, BufferId buffersCount, BufferSize bufferSize, QObject *parent = 0);
-    Q_SLOT void execute();
+
+    void execute();
 };
