@@ -1,12 +1,6 @@
-ROOT_PATH = ../..
-TEMPLATE = app
-TARGET = app
-DESTDIR = $${ROOT_PATH}/bin
+TEMPLATE = subdirs
+CONFIG += ordered
 
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
-
-include(SharedBuffer.pri)
-
-SOURCES += \
-    main.cpp
+SUBDIRS += \
+    server \
+    client

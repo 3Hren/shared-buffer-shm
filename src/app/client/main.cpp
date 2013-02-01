@@ -1,10 +1,8 @@
-#include <QCoreApplication>
-
-#include <QDebug>
-
 #include <signal.h>
 
-#include "Server.h"
+#include <QCoreApplication>
+#include <QDebug>
+
 #include "Pusher.h"
 #include "Dumper.h"
 
@@ -15,7 +13,7 @@ void terminateHandler(int i) {
 
 int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);
-    qDebug() << "USAGE: [TYPE](1 - Server, 2 - Pusher, 3 - Dumper) [NAME] [BUFFERS_COUNT] [BUFFER_SIZE] [TIMEOUT](not neccessary for server)";
+    qDebug() << "USAGE: [TYPE](1 - Pusher, 2 - Dumper) [NAME] [BUFFERS_COUNT] [BUFFER_SIZE] [TIMEOUT]";
 
     struct sigaction sa;
     sa.sa_handler = terminateHandler;
@@ -29,15 +27,12 @@ int main(int argc, char **argv) {
     int buffersCount = QVariant(argv[3]).toInt();
     int bufferSize = QVariant(argv[4]).toInt();
     int timeout = QVariant(argv[5]).toInt();
-    if (type == 1) {
-        Server server(name, buffersCount, bufferSize);
-        server.execute();
-        return app.exec();
-    } else if (type == 2){
+
+    if (type == 1){
         Pusher pusher(name, buffersCount, bufferSize, timeout);
         pusher.execute();
         return app.exec();
-    } else if (type == 3) {
+    } else if (type == 2) {
         Dumper dumper(name, buffersCount, bufferSize, timeout);
         dumper.execute();
         return app.exec();
@@ -45,7 +40,3 @@ int main(int argc, char **argv) {
 
     return 2;
 }
-
-/*! @todo: optimizations
- * Расставить Q_UNLIKELY
- */

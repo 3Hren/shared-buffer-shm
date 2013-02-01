@@ -2,6 +2,7 @@
 *.o
 Makefile
 /bin/
+/lib/
 
 #[Project Specific]
 *.pro.user*
