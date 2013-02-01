@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+#include <boost/timer/timer.hpp>
+
 constexpr int TIMESTAMP_MULTIPLIER = sizeof(TimeStamp) / sizeof(SignalValue);
 
 BufferManager::BufferManager(BufferId buffersCount, BufferSize bufferSize) :
@@ -62,9 +64,12 @@ void BufferManager::push(TimeStamp timestamp, SignalValue *signalsPack, void *da
 
 void *BufferManager::getBuffersDump(const void *data) const
 {    
-    int length = getDumpLength();
-    char *result = new char[length];
+    boost::timer::auto_cpu_timer *t = new boost::timer::auto_cpu_timer;
+    //! @todo: Достаточно долго занимает (при полном дампе 64х65536 около 20мс), можно добавить колбэк или указатель на блокировки
+    int length = getDumpLength();    
+    char *result = new char[length];    
     memset(result, 0, length);
+    delete t;
 
     SignalValue *_data = (SignalValue*)data;
     SignalValue *_result = (SignalValue*)result;

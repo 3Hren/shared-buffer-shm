@@ -38,6 +38,7 @@ void Dumper::execute()
 
 void Dumper::dump()
 {
+    QTimer::singleShot(timeout, this, SLOT(dump()));
     static int counter = 0;
     counter++;
 
@@ -58,6 +59,5 @@ void Dumper::dump()
 //        qDebug() << id << line;
 //    }
 
-    delete[] (char*)data;
-    QTimer::singleShot(timeout, this, SLOT(dump()));
+    delete[] (char*)data;    
 }

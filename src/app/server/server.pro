@@ -1,6 +1,6 @@
 ROOT_PATH = ../../..
 TEMPLATE = app
-TARGET = server
+TARGET = sharbuf_srv
 DESTDIR = $${ROOT_PATH}/bin
 
 OBJECTS_DIR = .obj
@@ -22,7 +22,11 @@ DEPENDPATH += \
     $${LIB_PATH} \
     $${UTILS_PATH}
 
-LIBS += -lboost_program_options -lboost_filesystem -lboost_regex
+LIBS += \
+    -llog4cxx \
+    -lboost_program_options \
+    -lboost_filesystem \
+    -lboost_regex
 
 SOURCES += \
     main.cpp \
