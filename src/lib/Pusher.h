@@ -6,7 +6,7 @@ class Pusher : public SharedBufferStorageClient
 {
     Q_OBJECT
 public:
-    Pusher(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent = 0);
+    Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent = 0);
 
 protected:
     void execute();

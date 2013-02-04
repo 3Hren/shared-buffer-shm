@@ -1,13 +1,14 @@
 #include "SharedBufferStorageClient.h"
 
-#include "BufferManager.h"
+#include "LowLevelBufferManager.h"
 
 #include <QSharedMemory>
 #include <QTimer>
+#include <QDebug>
 
 #include <log4cxx/logger.h>
 
-SharedBufferStorageClient::SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent) :
+SharedBufferStorageClient::SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     QObject(parent),
     name(name),
     buffersCount(buffersCount),
@@ -15,7 +16,7 @@ SharedBufferStorageClient::SharedBufferStorageClient(const QString &name, Buffer
     timeout(timeout)
 {
     shared = new QSharedMemory(name, this);
-    manager = new BufferManager(buffersCount, bufferSize);
+    manager = new LowLevelBufferManager(buffersCount, bufferSize);
 }
 
 SharedBufferStorageClient::~SharedBufferStorageClient()
@@ -36,12 +37,10 @@ void SharedBufferStorageClient::connectAndRun()
 
 void SharedBufferStorageClient::showBufferDump(void *data)
 {
-    float *_data = (float*)data;
     for (BufferId id = 0; id < buffersCount; ++id) {
         QString line;
-        for (BufferSize pos = 0; pos < bufferSize; ++pos) {
-            line += QString::number(_data[id * bufferSize + pos], 'f', 2).leftJustified(10, ' ');
-        }
-        LOG4CXX_TRACE(log4cxx::Logger::getRootLogger(), id << " " << line.toStdString());
+        for (BufferPos pos = 0; pos < bufferSize; ++pos)
+            line += QString::number(((float*)data)[1 + id * bufferSize + pos], 'f', 2).leftJustified(10, ' ');
+        qDebug() << id << " " << line;
     }
 }

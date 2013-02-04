@@ -4,19 +4,19 @@
 #include "SharedBufferGlobal.h"
 
 class QSharedMemory;
-class BufferManager;
+class LowLevelBufferManager;
 class SharedBufferStorageClient : public QObject
 {
     Q_OBJECT
 protected:
     QString name;
     BufferId buffersCount;
-    BufferSize bufferSize;
+    BufferPos bufferSize;
     int timeout;
-    BufferManager *manager;
+    LowLevelBufferManager *manager;
     QSharedMemory *shared;
 public:
-    SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent = 0);
+    SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent = 0);
     ~SharedBufferStorageClient();
 
     void connectAndRun();

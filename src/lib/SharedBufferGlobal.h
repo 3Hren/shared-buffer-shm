@@ -2,10 +2,10 @@
 
 #include <QString>
 
-typedef quint32 BufferSize;
+typedef quint32 BufferPos;
 typedef quint16 BufferId;
 typedef float SignalValue;
 typedef quint64 TimeStamp;
-typedef quint16 ErrorCode;
+typedef quint16 ValidityCode;
 
-static_assert(sizeof(BufferSize) == sizeof(SignalValue), "sizeof(BufferSize) must be equal sizeof(SignalValue) because of memcopy operations");
+static_assert(sizeof(BufferPos) == sizeof(SignalValue), "sizeof(BufferPos) must be equal sizeof(SignalValue) because of memcopy operations");

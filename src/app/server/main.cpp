@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 
     const QString &key = parser.getKey();
     const BufferId bufferCount = parser.getBufferCount();
-    const BufferSize bufferSize = parser.getBufferSize();    
+    const BufferPos bufferSize = parser.getBufferSize();    
 
     SharedBufferStorageServer server(key, bufferCount, bufferSize);
     server.execute();

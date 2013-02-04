@@ -15,7 +15,7 @@ int SharedBufferOptionParser::parseArguments(int argc, char **argv)
                 ("help", u8"- показать это сообщение")
                 ("key,k", options::value<std::string>()->required(), u8"- платформо-независимый ключ для доступа к объекту разделяемой памяти")
                 ("buffer_count,c", options::value<BufferId>()->required(), u8"- количество буферов")
-                ("buffer_size,s", options::value<BufferSize>()->required(), u8"- глубина каждого буфера");
+                ("buffer_size,s", options::value<BufferPos>()->required(), u8"- глубина каждого буфера");
 
         options::positional_options_description positionalOptions;
         options::variables_map vm;
@@ -42,7 +42,7 @@ int SharedBufferOptionParser::parseArguments(int argc, char **argv)
 
         key = QString::fromStdString(vm["key"].as<std::string>());
         bufferCount = vm["buffer_count"].as<BufferId>();
-        bufferSize = vm["buffer_size"].as<BufferSize>();
+        bufferSize = vm["buffer_size"].as<BufferPos>();
         return SUCCESS;
     } catch (std::exception &e) {
         std::cerr << "Unhandled Exception reached the top of main: " << e.what() << std::endl
@@ -61,7 +61,7 @@ BufferId SharedBufferOptionParser::getBufferCount() const
     return bufferCount;
 }
 
-BufferSize SharedBufferOptionParser::getBufferSize() const
+BufferPos SharedBufferOptionParser::getBufferSize() const
 {
     return bufferSize;
 }

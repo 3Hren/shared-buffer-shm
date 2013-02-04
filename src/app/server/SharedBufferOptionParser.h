@@ -6,13 +6,13 @@ class SharedBufferOptionParser
 {    
     QString key;
     BufferId bufferCount = 0;
-    BufferSize bufferSize = 0;
+    BufferPos bufferSize = 0;
 public:
     int parseArguments(int argc, char **argv);
 
     QString getKey() const;
     BufferId getBufferCount() const;
-    BufferSize getBufferSize() const;
+    BufferPos getBufferSize() const;
 
 public:
     enum Status {

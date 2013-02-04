@@ -5,16 +5,18 @@ LIBS += \
     -lboost_timer
 
 HEADERS += \
-    BufferManager.h \
+    LowLevelBufferManager.h \
     SharedBufferGlobal.h \
     SharedBufferStorageServer.h \
     Pusher.h \
     Dumper.h \
-    SharedBufferStorageClient.h
+    SharedBufferStorageClient.h \
+    HighLevelBufferManager.h
 
 SOURCES += \
-    BufferManager.cpp \
     SharedBufferStorageServer.cpp \
     Pusher.cpp \
     Dumper.cpp \
-    SharedBufferStorageClient.cpp
+    SharedBufferStorageClient.cpp \
+    LowLevelBufferManager.cpp \
+    HighLevelBufferManager.cpp

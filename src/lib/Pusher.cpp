@@ -1,6 +1,6 @@
 #include "Pusher.h"
 
-#include "BufferManager.h"
+#include "LowLevelBufferManager.h"
 
 #include <log4cxx/logger.h>
 
@@ -10,9 +10,7 @@
 #include <QCoreApplication>
 #include <QElapsedTimer>
 
-#include <QDebug>
-
-Pusher::Pusher(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent) :
+Pusher::Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent)
 {
 }
@@ -35,6 +33,7 @@ void Pusher::push()
     timer.start();
     shared->lock();
     manager->push(QDateTime::currentDateTime().toMSecsSinceEpoch(), data, shared->data());
+    showBufferDump(shared->data());
     shared->unlock();
     delete[] data;
 

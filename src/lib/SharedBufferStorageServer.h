@@ -10,10 +10,10 @@ class SharedBufferStorageServer : public QObject
     Q_OBJECT
     const QString name;
     const BufferId buffersCount;
-    const BufferSize bufferSize;
+    const BufferPos bufferSize;
     QSharedMemory *shared;
 public:
-    SharedBufferStorageServer(const QString &name, BufferId buffersCount, BufferSize bufferSize, QObject *parent = 0);
+    SharedBufferStorageServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent = 0);
 
     void execute();
 };

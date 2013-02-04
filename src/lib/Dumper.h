@@ -6,7 +6,7 @@ class Dumper : public SharedBufferStorageClient
 {
     Q_OBJECT
 public:
-    Dumper(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent = 0);
+    Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent = 0);
 
 protected:
     void execute();
