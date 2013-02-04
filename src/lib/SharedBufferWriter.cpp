@@ -1,12 +1,12 @@
 #include "SharedBufferWriter.h"
 
-#include "LowLevelBufferManager.h"
-#include "SharedBufferNotAttachedException.h"
+#include "LowLevelBufferHandler.h"
+#include "SharedBufferException.h"
 
 #include <QSharedMemory>
 #include <QDebug>
 
-SharedBufferWriter::SharedBufferWriter(LowLevelBufferManager *manager) :
+SharedBufferWriter::SharedBufferWriter(LowLevelBufferHandler *manager) :
     manager(manager)
 {
     shared = new QSharedMemory;    

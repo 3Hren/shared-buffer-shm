@@ -3,13 +3,13 @@
 #include "SharedBufferGlobal.h"
 
 class QSharedMemory;
-class LowLevelBufferManager;
+class LowLevelBufferHandler;
 class SharedBufferWriter
 {
-    LowLevelBufferManager *manager;
+    LowLevelBufferHandler *manager;
     QSharedMemory *shared;
 public:
-    SharedBufferWriter(LowLevelBufferManager *manager);
+    SharedBufferWriter(LowLevelBufferHandler *manager);
     ~SharedBufferWriter();
 
     BufferId getBuffersCount() const;

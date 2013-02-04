@@ -1,6 +1,6 @@
-#include "SharedBufferStorageClient.h"
+#include "_SharedBufferStorageClient.h"
 
-#include "LowLevelBufferManager.h"
+#include "LowLevelBufferHandler.h"
 
 #include <QSharedMemory>
 #include <QTimer>
@@ -8,7 +8,7 @@
 
 #include <log4cxx/logger.h>
 
-SharedBufferStorageClient::SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
+_SharedBufferStorageClient::_SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     QObject(parent),
     name(name),
     buffersCount(buffersCount),
@@ -16,15 +16,15 @@ SharedBufferStorageClient::SharedBufferStorageClient(const QString &name, Buffer
     timeout(timeout)
 {
     shared = new QSharedMemory(name, this);
-    manager = new LowLevelBufferManager(buffersCount, bufferSize);
+    manager = new LowLevelBufferHandler(buffersCount, bufferSize);
 }
 
-SharedBufferStorageClient::~SharedBufferStorageClient()
+_SharedBufferStorageClient::~_SharedBufferStorageClient()
 {
     delete manager;
 }
 
-void SharedBufferStorageClient::connectAndRun()
+void _SharedBufferStorageClient::connectAndRun()
 {
     const bool isAttached = shared->attach();
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been attached: " << std::boolalpha << isAttached);

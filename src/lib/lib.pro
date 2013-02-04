@@ -3,7 +3,7 @@ TEMPLATE = lib
 TARGET = $$qtLibraryTarget(sharbuf)
 DESTDIR = $${ROOT_PATH}/lib
 
-VERSION = 0.1.0
+VERSION = 0.1.1
 
 OBJECTS_DIR = .obj
 MOC_DIR = .moc

@@ -2,12 +2,12 @@
 
 #include "SharedBufferGlobal.h"
 
-class LowLevelBufferManager
+class LowLevelBufferHandler
 {
     const BufferId buffersCount;
     const BufferPos bufferSize;
 public:
-    LowLevelBufferManager(BufferId buffersCount, BufferPos bufferSize);
+    LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize);
 
     BufferId getBuffersCount() const;
     BufferPos getBufferSize() const;

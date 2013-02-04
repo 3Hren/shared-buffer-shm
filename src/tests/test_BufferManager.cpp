@@ -1,11 +1,11 @@
 #include "Global.h"
-#include "LowLevelBufferManager.h"
+#include "LowLevelBufferHandler.h"
 
 #include <boost/shared_array.hpp>
 #include <boost/scoped_array.hpp>
 
-TEST(LowLevelBufferManager, InitializationConstructor) {
-    LowLevelBufferManager manager(64, 1024);
+TEST(LowLevelBufferHandler, InitializationConstructor) {
+    LowLevelBufferHandler manager(64, 1024);
     EXPECT_EQ(64, manager.getBuffersCount());
     EXPECT_EQ(1024, manager.getBufferSize());
 }
@@ -20,10 +20,10 @@ char *createStorage(BufferId BUFFERS_COUNT, BufferPos BUFFER_SIZE, BufferPos pos
     return storage;
 }
 
-TEST(LowLevelBufferManager, Push) {
+TEST(LowLevelBufferHandler, Push) {
     static const BufferId BUFFERS_COUNT = 10;
     static const BufferPos BUFFER_SIZE = 4;
-    LowLevelBufferManager manager(BUFFERS_COUNT, BUFFER_SIZE);
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
 
     BufferPos expectedCurrentPos = 0;
     SignalValue expectedBuffers[] = {
@@ -60,11 +60,11 @@ TEST(LowLevelBufferManager, Push) {
     delete[] (char*)storage;
 }
 
-TEST(LowLevelBufferManager, MultiplePush) {
+TEST(LowLevelBufferHandler, MultiplePush) {
     static const BufferId BUFFERS_COUNT = 10;
     static const BufferPos BUFFER_SIZE = 4;
 
-    LowLevelBufferManager manager(BUFFERS_COUNT, BUFFER_SIZE);
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
     void *storage = manager.createStorage();
     for (int j = 0; j < 3; ++j) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
@@ -101,11 +101,11 @@ TEST(LowLevelBufferManager, MultiplePush) {
     delete[] (char*)storage;
 }
 
-TEST(LowLevelBufferManager, MultiplePushWithFullingBuffer) {
+TEST(LowLevelBufferHandler, MultiplePushWithFullingBuffer) {
     static const BufferId BUFFERS_COUNT = 10;
     static const BufferPos BUFFER_SIZE = 4;
 
-    LowLevelBufferManager manager(BUFFERS_COUNT, BUFFER_SIZE);
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
     void *storage = manager.createStorage();
     for (int j = 0; j < 4; ++j) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
@@ -143,11 +143,11 @@ TEST(LowLevelBufferManager, MultiplePushWithFullingBuffer) {
     delete[] (char*)storage;
 }
 
-TEST(LowLevelBufferManager, MultiplePushWithOverriding) {
+TEST(LowLevelBufferHandler, MultiplePushWithOverriding) {
     static const BufferId BUFFERS_COUNT = 10;
     static const BufferPos BUFFER_SIZE = 4;
 
-    LowLevelBufferManager manager(BUFFERS_COUNT, BUFFER_SIZE);
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
     void *storage = manager.createStorage();
     for (int j = 0; j < 5; ++j) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
@@ -183,10 +183,10 @@ TEST(LowLevelBufferManager, MultiplePushWithOverriding) {
     delete[] (char*)storage;
 }
 
-TEST(LowLevelBufferManager, GetBuffersDump) {
+TEST(LowLevelBufferHandler, GetBuffersDump) {
     static const BufferId BUFFERS_COUNT = 10;
     static const BufferPos BUFFER_SIZE = 4;
-    LowLevelBufferManager manager(BUFFERS_COUNT, BUFFER_SIZE);
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
 
     BufferPos currentPos = 0;
     SignalValue buffersDump[] = {
@@ -239,15 +239,6 @@ TEST(LowLevelBufferManager, GetBuffersDump) {
     //! Cleanup
     delete[] expected;
     delete[] dump;
-}
-
-#include "SharedBufferWriter.h"
-#include "BufferManager.h"
-TEST(BufferManager, Class) {
-    LowLevelBufferManager manager(10, 20);
-    SharedBufferWriter sharedManager(&manager);
-    BufferManager decorator(&sharedManager);
-    Q_UNUSED(decorator);
 }
 
 //! @note: Пригодится

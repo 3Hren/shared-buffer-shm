@@ -1,38 +1,36 @@
-#include "LowLevelBufferManager.h"
+#include "LowLevelBufferHandler.h"
 
 #include <QDebug>
 
 #include <boost/timer/timer.hpp>
 
-constexpr int TIMESTAMP_MULTIPLIER = sizeof(TimeStamp) / sizeof(SignalValue);
-
-LowLevelBufferManager::LowLevelBufferManager(BufferId buffersCount, BufferPos bufferSize) :
+LowLevelBufferHandler::LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize) :
     buffersCount(buffersCount),
     bufferSize(bufferSize)
 {
 }
 
-BufferId LowLevelBufferManager::getBuffersCount() const
+BufferId LowLevelBufferHandler::getBuffersCount() const
 {
     return buffersCount;
 }
 
-BufferPos LowLevelBufferManager::getBufferSize() const
+BufferPos LowLevelBufferHandler::getBufferSize() const
 {
     return bufferSize;
 }
 
-int LowLevelBufferManager::getDataLength() const
+int LowLevelBufferHandler::getDataLength() const
 {
     return sizeof(BufferPos) + buffersCount * bufferSize * sizeof(SignalValue) + buffersCount * sizeof(ValidityCode) + bufferSize * sizeof(TimeStamp);
 }
 
-int LowLevelBufferManager::getDumpLength() const
+int LowLevelBufferHandler::getDumpLength() const
 {
     return getDataLength() - sizeof(BufferPos);
 }
 
-void *LowLevelBufferManager::createStorage() const
+void *LowLevelBufferHandler::createStorage() const
 {
     const int length = getDataLength();
     char *storage = new char[length];
@@ -43,7 +41,7 @@ void *LowLevelBufferManager::createStorage() const
     return (void*)storage;
 }
 
-void LowLevelBufferManager::push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const
+void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const
 {
     char *_data = (char*)data;
 
@@ -68,7 +66,7 @@ void LowLevelBufferManager::push(TimeStamp timestamp, const SignalValue *signals
            + (currentPos * sizeof(TimeStamp)), &timestamp, sizeof(TimeStamp));
 }
 
-char *LowLevelBufferManager::getBuffersDump(const void *data) const
+char *LowLevelBufferHandler::getBuffersDump(const void *data) const
 {    
     int length = getDumpLength();
     char *result = new char[length];

@@ -7,15 +7,15 @@
 #include <boost/thread/mutex.hpp>
 
 class SharedBufferWriter;
-class BufferManager
+class BufferWriter
 {
-    SharedBufferWriter *manager;
+    const SharedBufferWriter * const manager;
 
     std::queue<SignalPack> signalPacks;
     boost::mutex packsMutex;
     boost::condition packsAvailableCondition;
 public:
-    BufferManager(SharedBufferWriter *manager);
+    BufferWriter(SharedBufferWriter *manager);
 
     void start();
 

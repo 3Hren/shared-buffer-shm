@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SharedBufferStorageClient.h"
+#include "_SharedBufferStorageClient.h"
 
-class _Dumper : public SharedBufferStorageClient
+class _Dumper : public _SharedBufferStorageClient
 {
     Q_OBJECT
 public:

@@ -5,3 +5,7 @@
 #include <cstring>
 
 using namespace ::testing;
+
+#include "LowLevelBufferHandler.h"
+#include "SharedBufferWriter.h"
+#include "BufferWriter.h"

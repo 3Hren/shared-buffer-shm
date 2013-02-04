@@ -6,22 +6,22 @@ LIBS += \
     -lboost_thread
 
 HEADERS += \
-    LowLevelBufferManager.h \
     SharedBufferGlobal.h \
     SharedBufferStorageServer.h \
+    _SharedBufferStorageClient.h \
     _Pusher.h \
     _Dumper.h \
-    SharedBufferStorageClient.h \
-    BufferManager.h \
     SharedBufferWriter.h \
-    SharedBufferNotAttachedException.h \
-    ../../lib/SignalPack.h
+    SignalPack.h \    
+    SharedBufferException.h \
+    BufferWriter.h \
+    LowLevelBufferHandler.h
 
 SOURCES += \
     SharedBufferStorageServer.cpp \
+    _SharedBufferStorageClient.cpp \
     _Pusher.cpp \
     _Dumper.cpp \
-    SharedBufferStorageClient.cpp \
-    LowLevelBufferManager.cpp \
-    BufferManager.cpp \
-    SharedBufferWriter.cpp
+    SharedBufferWriter.cpp \
+    BufferWriter.cpp \
+    LowLevelBufferHandler.cpp

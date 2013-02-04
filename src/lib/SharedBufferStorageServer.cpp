@@ -1,6 +1,6 @@
 #include "SharedBufferStorageServer.h"
 
-#include "LowLevelBufferManager.h"
+#include "LowLevelBufferHandler.h"
 
 #include <log4cxx/logger.h>
 
@@ -15,7 +15,7 @@ SharedBufferStorageServer::SharedBufferStorageServer(const QString &name, Buffer
 
 void SharedBufferStorageServer::execute()
 {
-    LowLevelBufferManager manager(buffersCount, bufferSize);
+    LowLevelBufferHandler manager(buffersCount, bufferSize);
     bool isCreated = shared->create(manager.getDataLength());    
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been created: " << std::boolalpha << isCreated);
     if (!isCreated)

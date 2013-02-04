@@ -1,6 +1,6 @@
 #include "_Dumper.h"
 
-#include "LowLevelBufferManager.h"
+#include "LowLevelBufferHandler.h"
 
 #include <log4cxx/logger.h>
 
@@ -11,7 +11,7 @@
 #include <QElapsedTimer>
 
 _Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
-    SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent)
+    _SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent)
 {
 }
 
@@ -34,5 +34,5 @@ void _Dumper::dump()
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed() << " ms");
     shared->unlock();    
 
-    delete[] data;
+    delete[] data;    
 }
