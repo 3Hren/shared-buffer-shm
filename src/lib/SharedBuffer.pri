@@ -7,12 +7,14 @@ LIBS += \
 HEADERS += \
     BufferManager.h \
     SharedBufferGlobal.h \
-    Server.h \
+    SharedBufferStorageServer.h \
     Pusher.h \
-    Dumper.h
+    Dumper.h \
+    SharedBufferStorageClient.h
 
 SOURCES += \
     BufferManager.cpp \
-    Server.cpp \
+    SharedBufferStorageServer.cpp \
     Pusher.cpp \
-    Dumper.cpp
+    Dumper.cpp \
+    SharedBufferStorageClient.cpp

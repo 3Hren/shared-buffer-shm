@@ -1,23 +1,14 @@
 #pragma once
 
-#include <QObject>
-#include "SharedBufferGlobal.h"
+#include "SharedBufferStorageClient.h"
 
-#include <QSharedMemory>
-
-class BufferManager;
-class Pusher : public QObject
+class Pusher : public SharedBufferStorageClient
 {
     Q_OBJECT
-    QString name;
-    BufferId buffersCount;
-    BufferSize bufferSize;
-    int timeout;
-    BufferManager *manager;
-    QSharedMemory *shared;
 public:
     Pusher(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent = 0);
-    ~Pusher();
+
+protected:
     void execute();
 
 private:

@@ -10,7 +10,6 @@ BufferManager::BufferManager(BufferId buffersCount, BufferSize bufferSize) :
     buffersCount(buffersCount),
     bufferSize(bufferSize)
 {
-    Q_ASSERT_X(sizeof(BufferSize) == sizeof(SignalValue), "Global", "sizeof(BufferSize) must be equal sizeof(SignalValue) because of memcopy operations");
 }
 
 BufferId BufferManager::getBuffersCount() const

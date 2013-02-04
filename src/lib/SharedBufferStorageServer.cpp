@@ -1,12 +1,10 @@
-#include "Server.h"
+#include "SharedBufferStorageServer.h"
 
 #include "BufferManager.h"
 
 #include <log4cxx/logger.h>
 
-log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger("Server");
-
-Server::Server(const QString &name, BufferId buffersCount, BufferSize bufferSize, QObject *parent) :
+SharedBufferStorageServer::SharedBufferStorageServer(const QString &name, BufferId buffersCount, BufferSize bufferSize, QObject *parent) :
     QObject(parent),
     name(name),
     buffersCount(buffersCount),
@@ -15,11 +13,11 @@ Server::Server(const QString &name, BufferId buffersCount, BufferSize bufferSize
     shared = new QSharedMemory(name, this);
 }
 
-void Server::execute()
+void SharedBufferStorageServer::execute()
 {
     BufferManager manager(buffersCount, bufferSize);
     bool isCreated = shared->create(manager.getDataLength());    
-    LOG4CXX_INFO(logger, "Shared memory segment has been created: " << std::boolalpha << isCreated);
+    LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been created: " << std::boolalpha << isCreated);
     if (!isCreated)
         exit(1);
 
@@ -29,5 +27,5 @@ void Server::execute()
     memcpy(data, initialized, manager.getDataLength());
     shared->unlock();
     delete[] (char*)initialized;
-    LOG4CXX_INFO(logger, "Shared memory segment has been initialized with " << shared->size() << " bytes (" << shared->size() / 1024.0 / 1024.0 << " Mbytes)");
+    LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been initialized with " << shared->size() << " bytes (" << shared->size() / 1024.0 / 1024.0 << " Mbytes)");
 }

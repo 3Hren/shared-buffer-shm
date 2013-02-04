@@ -1,23 +1,14 @@
 #pragma once
 
-#include <QObject>
-#include "SharedBufferGlobal.h"
+#include "SharedBufferStorageClient.h"
 
-#include <QSharedMemory>
-
-class BufferManager;
-class Dumper : public QObject
+class Dumper : public SharedBufferStorageClient
 {
     Q_OBJECT
-    QString name;
-    BufferId buffersCount;
-    BufferSize bufferSize;
-    int timeout;
-    BufferManager *manager;
-    QSharedMemory *shared;
 public:
     Dumper(const QString &name, BufferId buffersCount, BufferSize bufferSize, int timeout, QObject *parent = 0);
-    ~Dumper();
+
+protected:
     void execute();
 
 private:
