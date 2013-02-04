@@ -21,5 +21,5 @@ public:
     //! @todo: SignalValue *getBuffer(BufferId id, const void *data) const;
     //! @todo: TimeStamp *getTimeStamps(const void *data) const;
     //! @todo: ValidityCode getValidityCode(BufferId id, const void *data) const;
-    //! @todo void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
+    //! @todo: void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
 };

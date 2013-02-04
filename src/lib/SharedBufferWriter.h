@@ -7,7 +7,8 @@ class SharedBufferWriter : public AbstractSharedBufferHandler
 public:
     SharedBufferWriter(LowLevelBufferHandler *lowLevelBufferHandler);
 
-    void push(TimeStamp timestamp, const SignalValue *signalsPack) const;
+    void push(TimeStamp timestamp, const SignalValue *signalsPack) const;    
+    //! @todo void setValidityCode(BufferId id, ValidityCode code) const;
 
 protected:
     AccessMode getAcessMode() const override final;

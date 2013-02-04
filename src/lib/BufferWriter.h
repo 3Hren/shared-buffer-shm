@@ -20,4 +20,6 @@ public:
     void start();
 
     void push(TimeStamp timeStamp, SignalValue *signalValues);
+    //! @todo: void push(const SignalPack &pack);
+    //! @todo: void setValidityCode() -> delegate
 };
