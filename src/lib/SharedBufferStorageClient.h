@@ -23,5 +23,4 @@ public:
 
 protected:
     Q_SLOT virtual void execute() = 0;
-    void showBufferDump(void *data);
 };
