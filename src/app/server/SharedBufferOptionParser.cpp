@@ -12,7 +12,7 @@ int SharedBufferOptionParser::parseArguments(int argc, char **argv)
         const std::string &appName = boost::filesystem::basename(argv[0]);
         options::options_description desc("Options");
         desc.add_options()
-                ("help", u8"- напечатать это сообщение")
+                ("help", u8"- показать это сообщение")
                 ("key,k", options::value<std::string>()->required(), u8"- платформо-независимый ключ для доступа к объекту разделяемой памяти")
                 ("buffer_count,c", options::value<BufferId>()->required(), u8"- количество буферов")
                 ("buffer_size,s", options::value<BufferSize>()->required(), u8"- глубина каждого буфера");

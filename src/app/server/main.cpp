@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
     app.setOrganizationDomain("www.diaprom.ru");
 
     QSettings settings;
-    const QString &logConfigFileName = settings.value("logConfigFileName", "log.properties").toString();
+    const QString &logConfigFileName = settings.value("logConfigFileName", qApp->applicationDirPath() + "/log.properties").toString();
 
     log4cxx::PropertyConfigurator::configure(logConfigFileName.toStdString());
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(),
