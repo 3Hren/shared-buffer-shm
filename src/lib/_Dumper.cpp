@@ -1,4 +1,4 @@
-#include "Dumper.h"
+#include "_Dumper.h"
 
 #include "LowLevelBufferManager.h"
 
@@ -10,28 +10,29 @@
 #include <QCoreApplication>
 #include <QElapsedTimer>
 
-Dumper::Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
+_Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent)
 {
 }
 
-void Dumper::execute()
+void _Dumper::execute()
 {
     dump();
 }
 
-void Dumper::dump()
+void _Dumper::dump()
 {
     QTimer::singleShot(timeout, this, SLOT(dump()));
     static int counter = 0;
     counter++;
 
     QElapsedTimer timer;
-    timer.start();
+    timer.start();    
     shared->lock();
+    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Lock acquired");
     char *data = manager->getBuffersDump(shared->data());
-    shared->unlock();
-
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed() << " ms");
+    shared->unlock();    
+
     delete[] data;
 }

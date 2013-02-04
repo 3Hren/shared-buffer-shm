@@ -3,8 +3,8 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-#include "Pusher.h"
-#include "Dumper.h"
+#include "_Pusher.h"
+#include "_Dumper.h"
 
 #include <log4cxx/propertyconfigurator.h>
 
@@ -33,7 +33,7 @@ int main(int argc, char **argv) {
                  .arg(qApp->organizationName())
                  .arg(qApp->organizationDomain()).toLatin1().constData());
 
-    qDebug() << "USAGE: [TYPE](1 - Pusher, 2 - Dumper) [NAME] [BUFFERS_COUNT] [BUFFER_SIZE] [TIMEOUT]";
+    qDebug() << "USAGE: [TYPE](1 - _Pusher, 2 - _Dumper) [NAME] [BUFFERS_COUNT] [BUFFER_SIZE] [TIMEOUT]";
 
     struct sigaction sa;
     sa.sa_handler = terminateHandler;
@@ -49,11 +49,11 @@ int main(int argc, char **argv) {
     int timeout = QVariant(argv[5]).toInt();
 
     if (type == 1){
-        Pusher pusher(name, buffersCount, bufferSize, timeout);
+        _Pusher pusher(name, buffersCount, bufferSize, timeout);
         pusher.connectAndRun();
         return app.exec();
     } else if (type == 2) {
-        Dumper dumper(name, buffersCount, bufferSize, timeout);
+        _Dumper dumper(name, buffersCount, bufferSize, timeout);
         dumper.connectAndRun();
         return app.exec();
     }

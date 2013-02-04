@@ -2,21 +2,26 @@ QMAKE_CXXFLAGS += -std=c++11
 
 LIBS += \
     -llog4cxx \
-    -lboost_timer
+    -lboost_timer \
+    -lboost_thread
 
 HEADERS += \
     LowLevelBufferManager.h \
     SharedBufferGlobal.h \
     SharedBufferStorageServer.h \
-    Pusher.h \
-    Dumper.h \
+    _Pusher.h \
+    _Dumper.h \
     SharedBufferStorageClient.h \
-    HighLevelBufferManager.h
+    BufferManager.h \
+    SharedBufferWriter.h \
+    SharedBufferNotAttachedException.h \
+    ../../lib/SignalPack.h
 
 SOURCES += \
     SharedBufferStorageServer.cpp \
-    Pusher.cpp \
-    Dumper.cpp \
+    _Pusher.cpp \
+    _Dumper.cpp \
     SharedBufferStorageClient.cpp \
     LowLevelBufferManager.cpp \
-    HighLevelBufferManager.cpp
+    BufferManager.cpp \
+    SharedBufferWriter.cpp

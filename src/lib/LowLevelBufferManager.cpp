@@ -43,7 +43,7 @@ void *LowLevelBufferManager::createStorage() const
     return (void*)storage;
 }
 
-void LowLevelBufferManager::push(TimeStamp timestamp, SignalValue *signalsPack, const void *data) const
+void LowLevelBufferManager::push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const
 {
     char *_data = (char*)data;
 

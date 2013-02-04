@@ -241,10 +241,12 @@ TEST(LowLevelBufferManager, GetBuffersDump) {
     delete[] dump;
 }
 
-#include "HighLevelBufferManager.h"
-TEST(HighLevelBufferManager, Class) {
+#include "SharedBufferWriter.h"
+#include "BufferManager.h"
+TEST(BufferManager, Class) {
     LowLevelBufferManager manager(10, 20);
-    HighLevelBufferManager decorator(&manager);
+    SharedBufferWriter sharedManager(&manager);
+    BufferManager decorator(&sharedManager);
     Q_UNUSED(decorator);
 }
 

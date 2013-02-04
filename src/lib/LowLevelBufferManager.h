@@ -16,7 +16,7 @@ public:
     int getDumpLength() const;
 
     void *createStorage() const;
-    void push(TimeStamp timestamp, SignalValue *signalsPack, const void *data) const;
+    void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
     char *getBuffersDump(const void *data) const;
     //! @todo: SignalValue *getBuffer(BufferId id) const;
     //! @todo: TimeStamp *getTimeStamps() const;
