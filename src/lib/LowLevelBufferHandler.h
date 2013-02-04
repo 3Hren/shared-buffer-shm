@@ -18,7 +18,8 @@ public:
     void *createStorage() const;
     void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
     char *getBuffersDump(const void *data) const;
-    //! @todo: SignalValue *getBuffer(BufferId id) const;
-    //! @todo: TimeStamp *getTimeStamps() const;
-    //! @todo: ValidityCode getValidityCode(BufferId id) const;
+    //! @todo: SignalValue *getBuffer(BufferId id, const void *data) const;
+    //! @todo: TimeStamp *getTimeStamps(const void *data) const;
+    //! @todo: ValidityCode getValidityCode(BufferId id, const void *data) const;
+    //! @todo void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
 };

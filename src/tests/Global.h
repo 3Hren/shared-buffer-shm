@@ -8,4 +8,5 @@ using namespace ::testing;
 
 #include "LowLevelBufferHandler.h"
 #include "SharedBufferWriter.h"
+#include "SharedBufferReader.h"
 #include "BufferWriter.h"

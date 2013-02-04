@@ -14,8 +14,8 @@ LIBS += -lgtest
 
 SOURCES += \
     _Main.cpp \
-    test_BufferManager.cpp \
-    test_SharedBufferHandler.cpp
+    test_SharedBufferHandler.cpp \
+    test_BufferHandler.cpp
 
 HEADERS += \
     Global.h

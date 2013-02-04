@@ -1,9 +1,5 @@
 #include "LowLevelBufferHandler.h"
 
-#include <QDebug>
-
-#include <boost/timer/timer.hpp>
-
 LowLevelBufferHandler::LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize) :
     buffersCount(buffersCount),
     bufferSize(bufferSize)

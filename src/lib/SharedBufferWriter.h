@@ -1,20 +1,14 @@
 #pragma once
 
-#include "SharedBufferGlobal.h"
+#include "AbstractSharedBufferHandler.h"
 
-class QSharedMemory;
-class LowLevelBufferHandler;
-class SharedBufferWriter
+class SharedBufferWriter : public AbstractSharedBufferHandler
 {
-    LowLevelBufferHandler *manager;
-    QSharedMemory *shared;
 public:
-    SharedBufferWriter(LowLevelBufferHandler *manager);
-    ~SharedBufferWriter();
+    SharedBufferWriter(LowLevelBufferHandler *lowLevelBufferHandler);
 
-    BufferId getBuffersCount() const;
+    void push(TimeStamp timestamp, const SignalValue *signalsPack) const;
 
-    void attach(const QString &key);
-
-    void push(TimeStamp timestamp, const SignalValue *signalsPack) const;       
+protected:
+    AccessMode getAcessMode() const override final;
 };

@@ -5,7 +5,7 @@
 
 #include <QSharedMemory>
 
-class SharedBufferStorageServer : public QObject
+class SharedBufferServer : public QObject
 {
     Q_OBJECT
     const QString name;
@@ -13,7 +13,7 @@ class SharedBufferStorageServer : public QObject
     const BufferPos bufferSize;
     QSharedMemory *shared;
 public:
-    SharedBufferStorageServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent = 0);
+    SharedBufferServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent = 0);
 
     void execute();
 };

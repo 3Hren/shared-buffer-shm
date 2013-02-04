@@ -1,10 +1,10 @@
-#include "SharedBufferStorageServer.h"
+#include "SharedBufferServer.h"
 
 #include "LowLevelBufferHandler.h"
 
 #include <log4cxx/logger.h>
 
-SharedBufferStorageServer::SharedBufferStorageServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent) :
+SharedBufferServer::SharedBufferServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent) :
     QObject(parent),
     name(name),
     buffersCount(buffersCount),
@@ -13,7 +13,7 @@ SharedBufferStorageServer::SharedBufferStorageServer(const QString &name, Buffer
     shared = new QSharedMemory(name, this);
 }
 
-void SharedBufferStorageServer::execute()
+void SharedBufferServer::execute()
 {
     LowLevelBufferHandler manager(buffersCount, bufferSize);
     bool isCreated = shared->create(manager.getDataLength());    

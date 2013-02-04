@@ -3,7 +3,7 @@
 #include <iostream>
 
 #include "SharedBufferOptionParser.h"
-#include "SharedBufferStorageServer.h"
+#include "SharedBufferServer.h"
 
 #include <log4cxx/propertyconfigurator.h>
 
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
     const BufferId bufferCount = parser.getBufferCount();
     const BufferPos bufferSize = parser.getBufferSize();    
 
-    SharedBufferStorageServer server(key, bufferCount, bufferSize);
+    SharedBufferServer server(key, bufferCount, bufferSize);
     server.execute();
     return app.exec();
 }

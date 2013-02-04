@@ -6,38 +6,22 @@
 #include <QSharedMemory>
 #include <QDebug>
 
-SharedBufferWriter::SharedBufferWriter(LowLevelBufferHandler *manager) :
-    manager(manager)
+SharedBufferWriter::SharedBufferWriter(LowLevelBufferHandler *lowLevelBufferHandler) :
+    AbstractSharedBufferHandler(lowLevelBufferHandler)
 {
-    shared = new QSharedMemory;    
-}
-
-SharedBufferWriter::~SharedBufferWriter()
-{
-    delete shared;
-}
-
-BufferId SharedBufferWriter::getBuffersCount() const
-{
-    return manager->getBuffersCount();
-}
-
-void SharedBufferWriter::attach(const QString &key)
-{
-    if (shared->isAttached())
-        throw SharedBufferAlreadyAttachedException();
-
-    shared->setKey(key);
-    if (!shared->attach())
-        throw SharedBufferNotAttachedException(shared->errorString());    
 }
 
 void SharedBufferWriter::push(TimeStamp timestamp, const SignalValue *signalsPack) const
 {
-    if (!shared->isAttached())
-        throw SharedBufferNotAttachedException(shared->errorString());
+    if (!sharedMemory->isAttached())
+        throw SharedBufferNotAttachedException(sharedMemory->errorString());
 
-    shared->lock();
-    manager->push(timestamp, signalsPack, shared->data());
-    shared->unlock();
+    sharedMemory->lock();
+    lowLevelBufferHandler->push(timestamp, signalsPack, sharedMemory->data());
+    sharedMemory->unlock();
+}
+
+AbstractSharedBufferHandler::AccessMode SharedBufferWriter::getAcessMode() const
+{
+    return AccessMode::ReadWrite;
 }
