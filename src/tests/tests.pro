@@ -10,7 +10,7 @@ LIB_PATH = $${ROOT_PATH}/src/lib
 include($${LIB_PATH}/SharedBuffer.pri)
 INCLUDEPATH += $${LIB_PATH}
 DEPENDPATH += $${LIB_PATH}
-LIBS += -lgtest
+LIBS += -lgtest -lgmock
 
 SOURCES += \
     _Main.cpp \
@@ -18,4 +18,5 @@ SOURCES += \
     test_BufferHandler.cpp
 
 HEADERS += \
-    Global.h
+    Global.h \
+    Mocks.h
