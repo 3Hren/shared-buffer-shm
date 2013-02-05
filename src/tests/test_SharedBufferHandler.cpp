@@ -47,6 +47,15 @@ TEST_F(SharedBufferWriterTest, CallsLowLevelBufferHandlerPushMethodWhenPushInvok
     writer.push(timestamp, signalsPack);
 }
 
+/*! @todo:
+ * Привет, я из будущего!
+ * Пишу тебе этот абзац, чтобы вспомнить то, что писал.
+ * Закончил я на этом тесте. Все теги todo описаны.
+ * Продолжать разработку классов SharedBufferReader/Writer.
+ * Внедрять новые низкоуровневые методы.
+ * Разобраться с высокоуровневыми методами.
+ */
+
 TEST(SharedBufferReader, Class) {
     SharedBufferReader reader;
     Q_UNUSED(reader);
