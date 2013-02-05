@@ -7,9 +7,6 @@ LIBS += \
 
 HEADERS += \
     SharedBufferGlobal.h \
-    _SharedBufferStorageClient.h \
-    _Pusher.h \
-    _Dumper.h \
     SharedBufferWriter.h \
     SignalPack.h \    
     SharedBufferException.h \
@@ -23,9 +20,6 @@ HEADERS += \
     BeanFactory.h
 
 SOURCES += \
-    _SharedBufferStorageClient.cpp \
-    _Pusher.cpp \
-    _Dumper.cpp \
     SharedBufferWriter.cpp \
     BufferWriter.cpp \
     LowLevelBufferHandler.cpp \

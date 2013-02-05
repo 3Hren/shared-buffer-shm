@@ -1,6 +1,6 @@
 ROOT_PATH = ../../..
 TEMPLATE = app
-TARGET = client
+TARGET = sharbuf_cli
 DESTDIR = $${ROOT_PATH}/bin
 
 OBJECTS_DIR = .obj
@@ -15,5 +15,13 @@ include($${LIB_PATH}/SharedBuffer.pri)
 INCLUDEPATH += $${LIB_PATH}
 DEPENDPATH += $${LIB_PATH}
 
+HEADERS += \
+    _SharedBufferStorageClient.h \
+    _Pusher.h \
+    _Dumper.h
+
 SOURCES += \
-    main.cpp
+    main.cpp \
+    _SharedBufferStorageClient.cpp \
+    _Pusher.cpp \
+    _Dumper.cpp
