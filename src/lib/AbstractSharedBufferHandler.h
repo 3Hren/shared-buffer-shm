@@ -14,8 +14,12 @@ public:
     AbstractSharedBufferHandler(BufferId buffersCount, BufferPos bufferSize);
     virtual ~AbstractSharedBufferHandler();
 
+    void setSharedMemory(SharedMemory *sharedMemory);
+
     BufferId getBuffersCount() const;
     BufferPos getBufferSize() const;
+
+    SharedMemory *getSharedMemory() const;
 
     void attach(const QString &key);
 

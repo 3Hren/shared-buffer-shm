@@ -13,13 +13,16 @@ AbstractSharedBufferHandler::AbstractSharedBufferHandler(BufferId buffersCount, 
 {
     BeanFactory *factory = BeanFactory::getInstance();
     lowLevelBufferHandler = factory->createLowLevelBufferHandler(buffersCount, bufferSize);
-    sharedMemory = factory->createSharedMemoryBean();
 }
 
 AbstractSharedBufferHandler::~AbstractSharedBufferHandler()
 {
     delete lowLevelBufferHandler;
-    delete sharedMemory;
+}
+
+void AbstractSharedBufferHandler::setSharedMemory(SharedMemory *sharedMemory)
+{
+    this->sharedMemory = sharedMemory;
 }
 
 BufferId AbstractSharedBufferHandler::getBuffersCount() const
@@ -30,6 +33,11 @@ BufferId AbstractSharedBufferHandler::getBuffersCount() const
 BufferPos AbstractSharedBufferHandler::getBufferSize() const
 {
     return lowLevelBufferHandler->getBufferSize();
+}
+
+SharedMemory *AbstractSharedBufferHandler::getSharedMemory() const
+{
+    return sharedMemory;
 }
 
 void AbstractSharedBufferHandler::attach(const QString &key)

@@ -9,13 +9,13 @@
 class SharedBufferWriter;
 class BufferWriter
 {
-    const SharedBufferWriter * const manager;
+    const SharedBufferWriter * const sharedBufferWriter;
 
     std::queue<SignalPack> signalPacks;
     boost::mutex packsMutex;
     boost::condition packsAvailableCondition;
 public:
-    BufferWriter(SharedBufferWriter *manager);
+    BufferWriter(SharedBufferWriter *sharedBufferWriter);
 
     void start();
 

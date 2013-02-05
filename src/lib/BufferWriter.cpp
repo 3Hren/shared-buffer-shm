@@ -9,8 +9,8 @@
 #include <QDateTime>
 #include <QDebug>
 
-BufferWriter::BufferWriter(SharedBufferWriter *manager) :
-    manager(manager)
+BufferWriter::BufferWriter(SharedBufferWriter *sharedBufferWriter) :
+    sharedBufferWriter(sharedBufferWriter)
 {
 }
 
@@ -25,7 +25,7 @@ void BufferWriter::start()
             const SignalPack &signalPack = signalPacks.front();
             signalPacks.pop();
             packsMutex.unlock();
-            manager->push(signalPack.timeStamp, signalPack.signalValues.data());
+            sharedBufferWriter->push(signalPack.timeStamp, signalPack.signalValues.data());
             LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "Pushed signal pack with timestamp: " << QDateTime::fromMSecsSinceEpoch(signalPack.timeStamp).toString("ss,zzz").toStdString());
         }
     });
@@ -34,7 +34,7 @@ void BufferWriter::start()
 
 void BufferWriter::push(TimeStamp timeStamp, SignalValue *signalValues)
 {
-    SignalPack pack(timeStamp, signalValues, manager->getBuffersCount());
+    SignalPack pack(timeStamp, signalValues, sharedBufferWriter->getBuffersCount());
     boost::mutex::scoped_lock lock(packsMutex);    
     signalPacks.push(pack);
     packsAvailableCondition.notify_one();

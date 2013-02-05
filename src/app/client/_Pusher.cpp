@@ -2,6 +2,8 @@
 
 #include "LowLevelBufferHandler.h"
 
+#include "QtBasedSharedMemory.h"
+
 #include <log4cxx/logger.h>
 
 #include <boost/timer/timer.hpp>
@@ -16,10 +18,18 @@ _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSiz
     bufferSize(bufferSize),
     timeout(timeout)
 {
+    sharedMemory = new QtBasedSharedMemory;
     sharedBufferWriter = new SharedBufferWriter(buffersCount, bufferSize);
+    sharedBufferWriter->setSharedMemory(sharedMemory);
     sharedBufferWriter->attach(name);
+
     writer = new BufferWriter(sharedBufferWriter);
     writer->start();
+}
+
+_Pusher::~_Pusher()
+{
+    delete sharedMemory;
 }
 
 void _Pusher::execute()
