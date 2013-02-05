@@ -12,6 +12,8 @@ class _Pusher : QObject
     BufferId buffersCount;
     BufferPos bufferSize;
     int timeout;
+
+    LowLevelBufferHandler *lowLevelBufferHandler;
     SharedMemory *sharedMemory;
     SharedBufferWriter *sharedBufferWriter;
     BufferWriter *writer;

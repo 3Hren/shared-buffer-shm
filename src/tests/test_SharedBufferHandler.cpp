@@ -1,25 +1,53 @@
 #include "Mocks.h"
 
 TEST(SharedBufferWriter, Class) {
-    SharedBufferWriter writer(0, 0);
+    SharedBufferWriter writer;
     Q_UNUSED(writer);
 }
 
-TEST(SharedBufferWriter, ThrowsExceptionWhenTryingToPushAndSharedMemoryIsNotAttached) {
-    SharedBufferWriter writer(10, 10);
-    SharedMemoryMock sharedMemory;
+class SharedBufferWriterTest : public Test {
+protected:
+    NiceMock<SharedMemoryMock> sharedMemory;
+    NiceMock<LowLevelBufferHandlerMock> lowLevelBufferHandler;
+    SharedBufferWriter writer;
+    void SetUp() {
+        writer.setLowLevelBufferHandler(&lowLevelBufferHandler);
+        writer.setSharedMemory(&sharedMemory);
+
+        ON_CALL(sharedMemory, isAttached())
+                .WillByDefault(Return(true));
+        ON_CALL(sharedMemory, getErrorDescription())
+                .WillByDefault(Return(""));
+        ON_CALL(sharedMemory, lock())
+                .WillByDefault(Return(true));
+        ON_CALL(sharedMemory, unlock())
+                .WillByDefault(Return(true));
+    }
+};
+
+TEST_F(SharedBufferWriterTest, ThrowsExceptionWhenTryingToPushAndSharedMemoryIsNotAttached) {
     EXPECT_CALL(sharedMemory, isAttached())
             .Times(1)
             .WillOnce(Return(false));
-    EXPECT_CALL(sharedMemory, getErrorDescription())
-            .Times(1)
-            .WillOnce(Return(""));
-    writer.setSharedMemory(&sharedMemory);
 
     EXPECT_THROW(writer.push(0, 0), SharedBufferNotAttachedException);
 }
 
+TEST_F(SharedBufferWriterTest, CallsLowLevelBufferHandlerPushMethodWhenPushInvoked) {
+    TimeStamp timestamp = 10;
+    SignalValue signalsPack[] = {1, 2, 3, 4, 5};
+
+    EXPECT_CALL(lowLevelBufferHandler, push(timestamp, signalsPack, _))
+            .Times(1);
+    EXPECT_CALL(sharedMemory, lock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, unlock())
+            .Times(1);
+
+    writer.push(timestamp, signalsPack);
+}
+
 TEST(SharedBufferReader, Class) {
-    SharedBufferReader reader(0, 0);
+    SharedBufferReader reader;
     Q_UNUSED(reader);
 }

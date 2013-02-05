@@ -9,15 +9,9 @@
 
 #include <log4cxx/logger.h>
 
-AbstractSharedBufferHandler::AbstractSharedBufferHandler(BufferId buffersCount, BufferPos bufferSize)
+void AbstractSharedBufferHandler::setLowLevelBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler)
 {
-    BeanFactory *factory = BeanFactory::getInstance();
-    lowLevelBufferHandler = factory->createLowLevelBufferHandler(buffersCount, bufferSize);
-}
-
-AbstractSharedBufferHandler::~AbstractSharedBufferHandler()
-{
-    delete lowLevelBufferHandler;
+    this->lowLevelBufferHandler = lowLevelBufferHandler;
 }
 
 void AbstractSharedBufferHandler::setSharedMemory(SharedMemory *sharedMemory)

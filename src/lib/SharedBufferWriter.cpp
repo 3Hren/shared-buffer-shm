@@ -3,11 +3,6 @@
 #include "LowLevelBufferHandler.h"
 #include "SharedBufferException.h"
 
-SharedBufferWriter::SharedBufferWriter(BufferId buffersCount, BufferPos bufferSize) :
-    AbstractSharedBufferHandler(buffersCount, bufferSize)
-{
-}
-
 void SharedBufferWriter::push(TimeStamp timestamp, const SignalValue *signalsPack) const
 {
     if (!sharedMemory->isAttached())

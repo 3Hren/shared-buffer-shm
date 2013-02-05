@@ -5,8 +5,6 @@
 class SharedBufferReader : public AbstractSharedBufferHandler
 {
 public:
-    SharedBufferReader(BufferId buffersCount, BufferPos bufferSize);
-
     //! @todo: char *getBuffersDump() const;
     //! @todo: SignalValue *getBuffer(BufferId id, const void *data) const;
     //! @todo: TimeStamp *getTimeStamps(const void *data) const;

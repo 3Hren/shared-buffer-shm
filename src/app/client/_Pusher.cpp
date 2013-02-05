@@ -18,9 +18,12 @@ _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSiz
     bufferSize(bufferSize),
     timeout(timeout)
 {
+    lowLevelBufferHandler = new LowLevelBufferHandler(buffersCount, bufferSize);
     sharedMemory = new QtBasedSharedMemory;
-    sharedBufferWriter = new SharedBufferWriter(buffersCount, bufferSize);
+
+    sharedBufferWriter = new SharedBufferWriter;
     sharedBufferWriter->setSharedMemory(sharedMemory);
+    sharedBufferWriter->setLowLevelBufferHandler(lowLevelBufferHandler);
     sharedBufferWriter->attach(name);
 
     writer = new BufferWriter(sharedBufferWriter);
