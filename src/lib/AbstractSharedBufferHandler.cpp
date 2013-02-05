@@ -1,16 +1,15 @@
 #include "AbstractSharedBufferHandler.h"
 
 #include "LowLevelBufferHandler.h"
+#include "QtBasedSharedMemory.h"
 
 #include "SharedBufferException.h"
-
-#include <QSharedMemory>
 
 #include <QDebug>
 
 AbstractSharedBufferHandler::AbstractSharedBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler) :
     lowLevelBufferHandler(lowLevelBufferHandler),
-    sharedMemory(new QSharedMemory)
+    sharedMemory(new QtBasedSharedMemory)
 {
 }
 
@@ -35,6 +34,6 @@ void AbstractSharedBufferHandler::attach(const QString &key)
         throw SharedBufferAlreadyAttachedException();
 
     sharedMemory->setKey(key);
-    if (!sharedMemory->attach(static_cast<QSharedMemory::AccessMode>(getAcessMode())))
-        throw SharedBufferNotAttachedException(sharedMemory->errorString());
+    if (!sharedMemory->attach(getAcessMode()))
+        throw SharedBufferNotAttachedException(sharedMemory->getErrorDescription());
 }

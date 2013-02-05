@@ -17,7 +17,9 @@ HEADERS += \
     LowLevelBufferHandler.h \
     SharedBufferReader.h \
     SharedBufferServer.h \
-    AbstractSharedBufferHandler.h
+    AbstractSharedBufferHandler.h \
+    SharedMemory.h \
+    QtBasedSharedMemory.h
 
 SOURCES += \
     _SharedBufferStorageClient.cpp \
@@ -28,4 +30,5 @@ SOURCES += \
     LowLevelBufferHandler.cpp \
     SharedBufferReader.cpp \
     SharedBufferServer.cpp \
-    AbstractSharedBufferHandler.cpp
+    AbstractSharedBufferHandler.cpp \
+    QtBasedSharedMemory.cpp

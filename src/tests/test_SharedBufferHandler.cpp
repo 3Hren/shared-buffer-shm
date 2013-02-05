@@ -6,6 +6,8 @@ TEST(SharedBufferWriter, Class) {
     Q_UNUSED(writer);
 }
 
+//TEST(SharedBufferWriter, )
+
 TEST(SharedBufferReader, Class) {
     LowLevelBufferHandlerMock lowLevelBufferHandler;
     SharedBufferReader reader(&lowLevelBufferHandler);

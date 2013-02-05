@@ -11,5 +11,5 @@ public:
     //! @todo void setValidityCode(BufferId id, ValidityCode code) const;
 
 protected:
-    AccessMode getAcessMode() const override final;
+    SharedMemory::AccessMode getAcessMode() const override final;
 };

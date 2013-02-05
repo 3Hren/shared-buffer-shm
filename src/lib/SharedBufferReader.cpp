@@ -5,7 +5,7 @@ SharedBufferReader::SharedBufferReader(LowLevelBufferHandler *lowLevelBufferHand
 {
 }
 
-AbstractSharedBufferHandler::AccessMode SharedBufferReader::getAcessMode() const
+SharedMemory::AccessMode SharedBufferReader::getAcessMode() const
 {
-    return AccessMode::ReadOnly;
+    return SharedMemory::AccessMode::ReadOnly;
 }

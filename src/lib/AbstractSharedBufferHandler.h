@@ -1,21 +1,16 @@
 #pragma once
 
 #include "SharedBufferGlobal.h"
+#include "SharedMemory.h"
 
-class QSharedMemory;
 class LowLevelBufferHandler;
 class AbstractSharedBufferHandler
 {
 protected:
     LowLevelBufferHandler *lowLevelBufferHandler;
-    QSharedMemory *sharedMemory;
+    SharedMemory *sharedMemory;
 
 public:
-    enum class AccessMode {
-        ReadOnly = 0,
-        ReadWrite = 1
-    };
-
     AbstractSharedBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler);
     virtual ~AbstractSharedBufferHandler();
 
@@ -25,5 +20,5 @@ public:
     void attach(const QString &key);
 
 protected:
-    virtual AccessMode getAcessMode() const = 0;
+    virtual SharedMemory::AccessMode getAcessMode() const = 0;
 };
