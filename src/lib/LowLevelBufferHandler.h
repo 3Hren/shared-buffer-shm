@@ -8,6 +8,7 @@ class LowLevelBufferHandler
     const BufferPos bufferSize;
 public:
     LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize);
+    virtual ~LowLevelBufferHandler() {}
 
     BufferId getBuffersCount() const;
     BufferPos getBufferSize() const;

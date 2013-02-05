@@ -11,9 +11,12 @@
 #include <QDateTime>
 
 _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
-    _SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent)
+    QObject(parent),
+    buffersCount(buffersCount),
+    bufferSize(bufferSize),
+    timeout(timeout)
 {
-    sharedBufferWriter = new SharedBufferWriter(manager);
+    sharedBufferWriter = new SharedBufferWriter(buffersCount, bufferSize);
     sharedBufferWriter->attach(name);
     writer = new BufferWriter(sharedBufferWriter);
     writer->start();

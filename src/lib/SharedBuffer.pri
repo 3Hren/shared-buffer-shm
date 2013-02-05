@@ -19,7 +19,8 @@ HEADERS += \
     SharedBufferServer.h \
     AbstractSharedBufferHandler.h \
     SharedMemory.h \
-    QtBasedSharedMemory.h
+    QtBasedSharedMemory.h \
+    BeanFactory.h
 
 SOURCES += \
     _SharedBufferStorageClient.cpp \
@@ -31,4 +32,5 @@ SOURCES += \
     SharedBufferReader.cpp \
     SharedBufferServer.cpp \
     AbstractSharedBufferHandler.cpp \
-    QtBasedSharedMemory.cpp
+    QtBasedSharedMemory.cpp \
+    BeanFactory.cpp

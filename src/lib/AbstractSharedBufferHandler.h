@@ -11,7 +11,7 @@ protected:
     SharedMemory *sharedMemory;
 
 public:
-    AbstractSharedBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler);
+    AbstractSharedBufferHandler(BufferId buffersCount, BufferPos bufferSize);
     virtual ~AbstractSharedBufferHandler();
 
     BufferId getBuffersCount() const;

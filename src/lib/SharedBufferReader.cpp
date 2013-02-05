@@ -1,7 +1,7 @@
 #include "SharedBufferReader.h"
 
-SharedBufferReader::SharedBufferReader(LowLevelBufferHandler *lowLevelBufferHandler) :
-    AbstractSharedBufferHandler(lowLevelBufferHandler)
+SharedBufferReader::SharedBufferReader(BufferId buffersCount, BufferPos bufferSize) :
+    AbstractSharedBufferHandler(buffersCount, bufferSize)
 {
 }
 

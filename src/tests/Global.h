@@ -6,6 +6,8 @@
 
 using namespace ::testing;
 
+#include "BeanFactory.h"
+
 #include "LowLevelBufferHandler.h"
 
 #include "SharedBufferWriter.h"

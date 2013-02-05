@@ -1,20 +1,24 @@
 #include "AbstractSharedBufferHandler.h"
 
+#include "BeanFactory.h"
+
 #include "LowLevelBufferHandler.h"
-#include "QtBasedSharedMemory.h"
+#include "SharedMemory.h"
 
 #include "SharedBufferException.h"
 
-#include <QDebug>
+#include <log4cxx/logger.h>
 
-AbstractSharedBufferHandler::AbstractSharedBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler) :
-    lowLevelBufferHandler(lowLevelBufferHandler),
-    sharedMemory(new QtBasedSharedMemory)
+AbstractSharedBufferHandler::AbstractSharedBufferHandler(BufferId buffersCount, BufferPos bufferSize)
 {
+    BeanFactory *factory = BeanFactory::getInstance();
+    lowLevelBufferHandler = factory->createLowLevelBufferHandler(buffersCount, bufferSize);
+    sharedMemory = factory->createSharedMemoryBean();
 }
 
 AbstractSharedBufferHandler::~AbstractSharedBufferHandler()
 {
+    delete lowLevelBufferHandler;
     delete sharedMemory;
 }
 
@@ -34,6 +38,10 @@ void AbstractSharedBufferHandler::attach(const QString &key)
         throw SharedBufferAlreadyAttachedException();
 
     sharedMemory->setKey(key);
-    if (!sharedMemory->attach(getAcessMode()))
+    if (!sharedMemory->attach(getAcessMode())) {
+        LOG4CXX_FATAL(log4cxx::Logger::getRootLogger(), "Shared memory segment attaching failed: " << sharedMemory->getErrorDescription().toStdString());
         throw SharedBufferNotAttachedException(sharedMemory->getErrorDescription());
+    }
+
+    LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been successfully attached");
 }

@@ -3,8 +3,8 @@
 #include "LowLevelBufferHandler.h"
 #include "SharedBufferException.h"
 
-SharedBufferWriter::SharedBufferWriter(LowLevelBufferHandler *lowLevelBufferHandler) :
-    AbstractSharedBufferHandler(lowLevelBufferHandler)
+SharedBufferWriter::SharedBufferWriter(BufferId buffersCount, BufferPos bufferSize) :
+    AbstractSharedBufferHandler(buffersCount, bufferSize)
 {
 }
 

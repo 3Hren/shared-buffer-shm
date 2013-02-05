@@ -1,15 +1,11 @@
 #include "Mocks.h"
 
 TEST(SharedBufferWriter, Class) {
-    LowLevelBufferHandlerMock lowLevelBufferHandler;
-    SharedBufferWriter writer(&lowLevelBufferHandler);
+    SharedBufferWriter writer(0, 0);
     Q_UNUSED(writer);
 }
 
-//TEST(SharedBufferWriter, )
-
 TEST(SharedBufferReader, Class) {
-    LowLevelBufferHandlerMock lowLevelBufferHandler;
-    SharedBufferReader reader(&lowLevelBufferHandler);
+    SharedBufferReader reader(0, 0);
     Q_UNUSED(reader);
 }

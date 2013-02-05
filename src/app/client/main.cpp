@@ -5,7 +5,9 @@
 
 #include "_Pusher.h"
 #include "_Dumper.h"
+#include "BeanFactory.h"
 
+#include <boost/scoped_ptr.hpp>
 #include <log4cxx/propertyconfigurator.h>
 
 #include <QCoreApplication>
@@ -48,9 +50,11 @@ int main(int argc, char **argv) {
     int bufferSize = QVariant(argv[4]).toInt();
     int timeout = QVariant(argv[5]).toInt();
 
+    boost::scoped_ptr<BeanFactory>factory(new BeanFactory());
+    BeanFactory::registerFactory(factory.get());
     if (type == 1){
         _Pusher pusher(name, buffersCount, bufferSize, timeout);
-        pusher.connectAndRun();
+        pusher.execute();
         return app.exec();
     } else if (type == 2) {
         _Dumper dumper(name, buffersCount, bufferSize, timeout);
