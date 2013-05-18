@@ -10,7 +10,7 @@ LIB_PATH = $${ROOT_PATH}/src/lib
 include($${LIB_PATH}/SharedBuffer.pri)
 INCLUDEPATH += $${LIB_PATH}
 DEPENDPATH += $${LIB_PATH}
-LIBS += -lgtest -lgmock
+LIBS += -lgtest -lgmock -lboost_system -lboost_filesystem
 
 SOURCES += \
     _Main.cpp \

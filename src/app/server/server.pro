@@ -25,6 +25,7 @@ DEPENDPATH += \
 LIBS += \
     -llog4cxx \
     -lboost_program_options \
+    -lboost_system \
     -lboost_filesystem \
     -lboost_regex
 

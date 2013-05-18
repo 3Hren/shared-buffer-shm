@@ -2,20 +2,21 @@
 
 #include "SignalPack.h"
 
-#include <queue>
-#include <boost/thread/condition.hpp>
-#include <boost/thread/mutex.hpp>
+#include <atomic>
+#include <thread>
+
+#include <ThreadSafeQueue.h>
 
 class SharedBufferWriter;
 class BufferWriter
 {
-    const SharedBufferWriter * const sharedBufferWriter;
-
-    std::queue<SignalPack> signalPacks;
-    boost::mutex packsMutex;
-    boost::condition packsAvailableCondition;
+    std::thread consumer;
+    std::atomic_bool done;
+    ThreadSafeQueue<SignalPack> queue;
+    SharedBufferWriter *sharedBufferWriter;
 public:
     BufferWriter(SharedBufferWriter *sharedBufferWriter);
+    ~BufferWriter();
 
     void start();
 

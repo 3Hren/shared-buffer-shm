@@ -7,7 +7,8 @@ OBJECTS_DIR = .obj
 MOC_DIR = .moc
 
 LIBS += \
-    -llog4cxx
+    -llog4cxx \
+    -lboost_system
 
 LIB_PATH = $${ROOT_PATH}/src/lib
 

@@ -3,6 +3,7 @@
 
 #include <boost/shared_array.hpp>
 #include <boost/scoped_array.hpp>
+#include <cstring>
 
 TEST(LowLevelBufferHandler, InitializationConstructor) {
     LowLevelBufferHandler manager(64, 1024);

@@ -4,7 +4,7 @@
 
 QtBasedSharedMemory::QtBasedSharedMemory() :
     sharedMemory(new QSharedMemory)
-{
+{    
 }
 
 QtBasedSharedMemory::~QtBasedSharedMemory()

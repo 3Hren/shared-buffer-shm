@@ -8,7 +8,7 @@ LIBS += \
 HEADERS += \
     SharedBufferGlobal.h \
     SharedBufferWriter.h \
-    SignalPack.h \    
+    SignalPack.h \
     SharedBufferException.h \
     BufferWriter.h \
     LowLevelBufferHandler.h \
@@ -17,7 +17,8 @@ HEADERS += \
     AbstractSharedBufferHandler.h \
     SharedMemory.h \
     QtBasedSharedMemory.h \
-    BeanFactory.h
+    BeanFactory.h \
+    ThreadSafeQueue.h
 
 SOURCES += \
     SharedBufferWriter.cpp \

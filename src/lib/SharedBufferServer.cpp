@@ -11,12 +11,13 @@ SharedBufferServer::SharedBufferServer(const QString &name, BufferId buffersCoun
     bufferSize(bufferSize)
 {
     shared = new QSharedMemory(name, this);
+    LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), shared->nativeKey().toStdString());
 }
 
 void SharedBufferServer::execute()
 {
     LowLevelBufferHandler manager(buffersCount, bufferSize);
-    bool isCreated = shared->create(manager.getDataLength());    
+    bool isCreated = shared->create(manager.getDataLength());
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been created: " << std::boolalpha << isCreated);
     if (!isCreated)
         exit(1);
