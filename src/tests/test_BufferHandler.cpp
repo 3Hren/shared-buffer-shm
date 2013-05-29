@@ -13,11 +13,14 @@ TEST(LowLevelBufferHandler, InitializationConstructor) {
 
 char *createStorage(BufferId BUFFERS_COUNT, BufferPos BUFFER_SIZE, BufferPos pos, SignalValue buffers[], ValidityCode codes[], TimeStamp timeStamps[], int length) {
     char *storage = new char[length];
+    MetaData meta;
+    meta.currentPos = pos;
     memset(storage, 0, length);
-    memcpy(storage, &pos, sizeof(BufferPos));
-    memcpy(storage + sizeof(BufferPos), buffers, (BUFFERS_COUNT * BUFFER_SIZE) * sizeof(SignalValue));
-    memcpy(storage + sizeof(BufferPos) + BUFFERS_COUNT * BUFFER_SIZE * sizeof(SignalValue), codes, BUFFERS_COUNT * sizeof(ValidityCode));
-    memcpy(storage + sizeof(BufferPos) + BUFFERS_COUNT * BUFFER_SIZE * sizeof(SignalValue) + BUFFERS_COUNT * sizeof(ValidityCode), timeStamps, BUFFER_SIZE * sizeof(TimeStamp));
+
+    memcpy(storage, &meta, sizeof(MetaData));
+    memcpy(storage + sizeof(MetaData), buffers, (BUFFERS_COUNT * BUFFER_SIZE) * sizeof(SignalValue));
+    memcpy(storage + sizeof(MetaData) + BUFFERS_COUNT * BUFFER_SIZE * sizeof(SignalValue), codes, BUFFERS_COUNT * sizeof(ValidityCode));
+    memcpy(storage + sizeof(MetaData) + BUFFERS_COUNT * BUFFER_SIZE * sizeof(SignalValue) + BUFFERS_COUNT * sizeof(ValidityCode), timeStamps, BUFFER_SIZE * sizeof(TimeStamp));
     return storage;
 }
 
@@ -40,7 +43,7 @@ TEST(LowLevelBufferHandler, Push) {
         9, 0, 0, 0
     };
     ValidityCode expectedValidityCodes[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-    TimeStamp expectedTimeStamps[] = {10, 0, 0, 0};
+    TimeStamp expectedTimeStamps[] = {1, 0, 0, 0};
     const int length = manager.getDataLength();
     boost::scoped_array<char> expected(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
                                                      expectedCurrentPos,
@@ -54,7 +57,7 @@ TEST(LowLevelBufferHandler, Push) {
         signalsPackToPush[i] = i;
 
     void *storage = manager.createStorage();
-    manager.push(10, signalsPackToPush.get(), storage);
+    manager.push(1, signalsPackToPush.get(), storage);
 
     EXPECT_TRUE(0 == std::memcmp(expected.get(), storage, length));
 
@@ -71,7 +74,7 @@ TEST(LowLevelBufferHandler, MultiplePush) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
         for (int i = 0; i < BUFFERS_COUNT; ++i)
             signalsPack[i] = i;
-        manager.push(j, signalsPack.get(), (void*)storage);
+        manager.push(j, signalsPack.get(), storage);
     }
 
     BufferPos expectedCurrentPos = 2;
@@ -235,7 +238,7 @@ TEST(LowLevelBufferHandler, GetBuffersDump) {
     memcpy(expected + (BUFFERS_COUNT * BUFFER_SIZE) * sizeof(SignalValue) + BUFFERS_COUNT * sizeof(ValidityCode), expectedTimeStamps, BUFFER_SIZE * sizeof(TimeStamp));
 
     char *dump = manager.getBuffersDump((void*)storage.get());
-    EXPECT_TRUE(0 == std::memcmp(expected, dump, dumpLength));
+    EXPECT_TRUE(0 == std::memcmp(expected, dump, dumpLength));    
 
     //! Cleanup
     delete[] expected;
@@ -246,3 +249,5 @@ TEST(LowLevelBufferHandler, GetBuffersDump) {
 
 //for (int i = 0; i < length; ++i)
 //    qDebug() << i << (float)(expected.get())[i] << (float)((char*)storage)[i];
+//for (int i = 0; i < BUFFERS_COUNT * BUFFER_SIZE; ++i)
+//    qDebug() << i << ((SignalValue*)expected)[i] << ((SignalValue*)dump)[i];
