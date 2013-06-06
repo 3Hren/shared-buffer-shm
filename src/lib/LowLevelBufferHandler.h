@@ -39,7 +39,7 @@ public:
     virtual SignalValue *getBuffer(BufferId bufferId, const void *data) const;
     virtual TimeStamp *getTimeStamps(const void *data) const;
     ValidityCode getValidityCode(BufferId bufferId, const void *data) const;
-    //! @todo: void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
+    void setValidityCode(BufferId bufferId, ValidityCode code, const void *data) const;
 
 private:
     template<typename T>

@@ -186,3 +186,11 @@ ValidityCode LowLevelBufferHandler::getValidityCode(BufferId bufferId, const voi
     memcpy(&result, qualityData + sizeof(ValidityCode) * bufferId, sizeof(ValidityCode));
     return result;
 }
+
+void LowLevelBufferHandler::setValidityCode(BufferId bufferId, ValidityCode code, const void *data) const
+{
+    char *metaData = (char*)data;
+    char *bufferData = metaData + getMetaDataSize();
+    char *qualityData = bufferData + getBufferDataSize();
+    memcpy(qualityData + sizeof(ValidityCode) * bufferId, &code, sizeof(ValidityCode));
+}
