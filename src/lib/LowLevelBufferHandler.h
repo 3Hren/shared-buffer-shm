@@ -18,6 +18,22 @@ class LowLevelBufferHandler
 {
     const BufferId buffersCount;
     const BufferPos bufferSize;
+    const struct Internal {
+        const quint16 META_DATA_SIZE_BYTES;
+        const quint32 BUFFER_DATA_SIZE_BYTES;
+        const quint32 BUFFERS_DATA_SIZE_BYTES;
+        const quint32 QUALITY_DATA_SIZE_BYTES;
+        const quint32 TIMESTAMP_DATA_SIZE_BYTES;
+
+        inline constexpr quint32 getDataLengthBytes() const {
+            return META_DATA_SIZE_BYTES + BUFFERS_DATA_SIZE_BYTES + QUALITY_DATA_SIZE_BYTES + TIMESTAMP_DATA_SIZE_BYTES;
+        }
+
+        inline constexpr quint32 getDumpLengthBytes() const {
+            return getDataLengthBytes() - META_DATA_SIZE_BYTES;
+        }
+    } internal;
+
 public:
     LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize);
     virtual ~LowLevelBufferHandler() {}
@@ -25,21 +41,16 @@ public:
     BufferId getBuffersCount() const;
     BufferPos getBufferSize() const;
 
-    quint16 getMetaDataSize() const;
-    quint32 getBufferDataSizeBytes() const;
-    quint32 getBufferDataSize() const;
-    quint32 getQualityDataSize() const;
-    quint32 getTimestampDataSize() const;
-    int getDataLength() const;
-    int getDumpLength() const;
+    quint32 getDataLengthBytes() const;
+    quint32 getDumpLengthBytes() const;
 
     virtual void *createStorage() const;
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
     virtual char *getBuffersDump(const void *data) const;
     virtual SignalValue *getBuffer(BufferId bufferId, const void *data) const;
     virtual TimeStamp *getTimeStamps(const void *data) const;
-    ValidityCode getValidityCode(BufferId bufferId, const void *data) const;
-    void setValidityCode(BufferId bufferId, ValidityCode code, const void *data) const;
+    QualityCode getQualityCode(BufferId bufferId, const void *data) const;
+    void setQualityCode(BufferId bufferId, QualityCode code, const void *data) const;
 
 private:
     template<typename T>

@@ -22,5 +22,5 @@ public:
 
     void push(TimeStamp timeStamp, SignalValue *signalValues);
     //! @todo: void push(const SignalPack &pack);
-    //! @todo: void setValidityCode() -> delegate
+    //! @todo: void setQualityCode() -> delegate
 };

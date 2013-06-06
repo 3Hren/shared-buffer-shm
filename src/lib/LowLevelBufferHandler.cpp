@@ -4,7 +4,14 @@
 
 LowLevelBufferHandler::LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize) :
     buffersCount(buffersCount),
-    bufferSize(bufferSize)
+    bufferSize(bufferSize),
+    internal({
+             sizeof(MetaData),
+             bufferSize * sizeof(SignalValue),
+             buffersCount * bufferSize * sizeof(SignalValue),
+             buffersCount * sizeof(QualityCode),
+             bufferSize * sizeof(TimeStamp)
+             })
 {
 }
 
@@ -18,44 +25,19 @@ BufferPos LowLevelBufferHandler::getBufferSize() const
     return bufferSize;
 }
 
-quint16 LowLevelBufferHandler::getMetaDataSize() const
+quint32 LowLevelBufferHandler::getDataLengthBytes() const
 {
-    return sizeof(MetaData);
+    return internal.getDataLengthBytes();
 }
 
-quint32 LowLevelBufferHandler::getBufferDataSizeBytes() const
+quint32 LowLevelBufferHandler::getDumpLengthBytes() const
 {
-    return bufferSize * sizeof(SignalValue);
-}
-
-quint32 LowLevelBufferHandler::getBufferDataSize() const
-{
-    return buffersCount * bufferSize * sizeof(SignalValue);
-}
-
-quint32 LowLevelBufferHandler::getQualityDataSize() const
-{
-    return buffersCount * sizeof(ValidityCode);
-}
-
-quint32 LowLevelBufferHandler::getTimestampDataSize() const
-{
-    return bufferSize * sizeof(TimeStamp);
-}
-
-int LowLevelBufferHandler::getDataLength() const
-{
-    return getMetaDataSize() + getBufferDataSize() + getQualityDataSize() + getTimestampDataSize();
-}
-
-int LowLevelBufferHandler::getDumpLength() const
-{
-    return getDataLength() - sizeof(BufferPos);
+    return internal.getDumpLengthBytes();
 }
 
 void *LowLevelBufferHandler::createStorage() const
 {
-    const int length = getDataLength();
+    const int length = getDataLengthBytes();
     char *storage = new char[length];
     memset(storage, 0, length);
 
@@ -68,20 +50,20 @@ void *LowLevelBufferHandler::createStorage() const
 void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const
 {
     char *metaData = (char*)data;
-    char *bufferData = metaData + getMetaDataSize();
-    char *qualityData = bufferData + getBufferDataSize();
-    char *timestampData = qualityData + getQualityDataSize();
+    char *buffersData = metaData + internal.META_DATA_SIZE_BYTES;
+    char *qualityData = buffersData + internal.BUFFERS_DATA_SIZE_BYTES;
+    char *timestampData = qualityData + internal.QUALITY_DATA_SIZE_BYTES;
 
     MetaData meta;
-    memcpy(&meta, metaData, getMetaDataSize());
+    memcpy(&meta, metaData, internal.META_DATA_SIZE_BYTES);
     meta.currentPos++;
     Q_ASSERT(meta.currentPos <= bufferSize);
     if (meta.currentPos == bufferSize)
         meta.currentPos = 0;
-    memcpy(metaData, &meta, getMetaDataSize());
+    memcpy(metaData, &meta, internal.META_DATA_SIZE_BYTES);
 
     for (int bufferId = 0; bufferId < buffersCount; ++bufferId)
-        memcpy(bufferData + (bufferId * bufferSize + meta.currentPos) * sizeof(SignalValue), &signalsPack[bufferId], sizeof(SignalValue));
+        memcpy(buffersData + (bufferId * bufferSize + meta.currentPos) * sizeof(SignalValue), &signalsPack[bufferId], sizeof(SignalValue));
 
     memcpy(timestampData + meta.currentPos * sizeof(TimeStamp), &timestamp, sizeof(TimeStamp));
 }
@@ -89,39 +71,39 @@ void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signals
 char *LowLevelBufferHandler::getBuffersDump(const void *data) const
 {        
     char *metaData = (char*)data;
-    char *bufferData = metaData + getMetaDataSize();
-    char *qualityData = bufferData + getBufferDataSize();
-    char *timestampData = qualityData + getQualityDataSize();
+    char *buffersData = metaData + internal.META_DATA_SIZE_BYTES;
+    char *qualityData = buffersData + internal.BUFFERS_DATA_SIZE_BYTES;
+    char *timestampData = qualityData + internal.QUALITY_DATA_SIZE_BYTES;
 
-    int length = getDumpLength();
+    int length = getDumpLengthBytes();
     char *result = new char[length];
-    char *resultBufferData = result;
-    char *resultQualityData = resultBufferData + getBufferDataSize();
-    char *resultTimestampsData = resultQualityData + getQualityDataSize();
+    char *resultBuffersData = result;
+    char *resultQualityData = resultBuffersData + internal.BUFFERS_DATA_SIZE_BYTES;
+    char *resultTimestampsData = resultQualityData + internal.QUALITY_DATA_SIZE_BYTES;
     memset(result, 0, length);
 
     MetaData meta;
-    memcpy(&meta, metaData, getMetaDataSize());
+    memcpy(&meta, metaData, internal.META_DATA_SIZE_BYTES);
 
     for (BufferId bufferId = 0; bufferId < buffersCount; ++bufferId) {
-        memcpy(resultBufferData + bufferId * bufferSize * sizeof(SignalValue),
-               bufferData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
+        memcpy(resultBuffersData + bufferId * bufferSize * sizeof(SignalValue),
+               buffersData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
                bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue));
-        memcpy(resultBufferData + bufferId * bufferSize * sizeof(SignalValue) + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
-               bufferData + bufferId * bufferSize * sizeof(SignalValue),
+        memcpy(resultBuffersData + bufferId * bufferSize * sizeof(SignalValue) + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
+               buffersData + bufferId * bufferSize * sizeof(SignalValue),
                (meta.currentPos + 1) * sizeof(SignalValue));
     }
 
     // Reversing
     for (BufferId bufferId = 0; bufferId < buffersCount; ++bufferId)
-        reverse<SignalValue>(resultBufferData + bufferId * bufferSize * sizeof(SignalValue));
+        reverse<SignalValue>(resultBuffersData + bufferId * bufferSize * sizeof(SignalValue));
 
-    memcpy(resultQualityData, qualityData, getQualityDataSize());
+    memcpy(resultQualityData, qualityData, internal.QUALITY_DATA_SIZE_BYTES);
 
     memcpy(resultTimestampsData,
            timestampData + (meta.currentPos + 1)* sizeof(TimeStamp),
-           getTimestampDataSize() - (meta.currentPos + 1)* sizeof(TimeStamp));
-    memcpy(resultTimestampsData + getTimestampDataSize() - (meta.currentPos + 1) * sizeof(TimeStamp),
+           internal.TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1)* sizeof(TimeStamp));
+    memcpy(resultTimestampsData + internal.TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp),
            timestampData,
            (meta.currentPos + 1) * sizeof(TimeStamp));
 
@@ -132,21 +114,21 @@ char *LowLevelBufferHandler::getBuffersDump(const void *data) const
 SignalValue *LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *data) const
 {
     char *metaData = (char*)data;
-    char *bufferData = metaData + getMetaDataSize();
+    char *buffersData = metaData + internal.META_DATA_SIZE_BYTES;
 
-    int length = getBufferDataSizeBytes();
+    int length = internal.BUFFER_DATA_SIZE_BYTES;
     char *result = new char[length];
-    char *resultBufferData = result;
+    char *resultBuffersData = result;
     memset(result, 0, length);
 
     MetaData meta;
-    memcpy(&meta, metaData, getMetaDataSize());
+    memcpy(&meta, metaData, internal.META_DATA_SIZE_BYTES);
 
-    memcpy(resultBufferData,
-           bufferData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
+    memcpy(resultBuffersData,
+           buffersData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
            bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue));
-    memcpy(resultBufferData + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
-           bufferData + bufferId * bufferSize * sizeof(SignalValue),
+    memcpy(resultBuffersData + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
+           buffersData + bufferId * bufferSize * sizeof(SignalValue),
            (meta.currentPos + 1) * sizeof(SignalValue));
 
     reverse<SignalValue>(result);
@@ -156,20 +138,19 @@ SignalValue *LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *dat
 TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
 {
     char *metaData = (char*)data;
-    char *bufferData = metaData + getMetaDataSize();
-    char *qualityData = bufferData + getBufferDataSize();
-    char *timestampData = qualityData + getQualityDataSize();
+    char *buffersData = metaData + internal.META_DATA_SIZE_BYTES;
+    char *qualityData = buffersData + internal.BUFFERS_DATA_SIZE_BYTES;
+    char *timestampData = qualityData + internal.QUALITY_DATA_SIZE_BYTES;
 
-    int length = getTimestampDataSize();
-    char *result = new char[length];
-    memset(result, 0, length);
+    char *result = new char[internal.TIMESTAMP_DATA_SIZE_BYTES];
+    memset(result, 0, internal.TIMESTAMP_DATA_SIZE_BYTES);
 
     MetaData meta;
-    memcpy(&meta, metaData, getMetaDataSize());
+    memcpy(&meta, metaData, internal.META_DATA_SIZE_BYTES);
     memcpy(result,
            timestampData + (meta.currentPos + 1) * sizeof(TimeStamp),
-           getTimestampDataSize() - (meta.currentPos + 1) * sizeof(TimeStamp));
-    memcpy(result + getTimestampDataSize() - (meta.currentPos + 1) * sizeof(TimeStamp),
+           internal.TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp));
+    memcpy(result + internal.TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp),
            timestampData,
            (meta.currentPos + 1) * sizeof(TimeStamp));
 
@@ -177,20 +158,20 @@ TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
     return (TimeStamp*)result;
 }
 
-ValidityCode LowLevelBufferHandler::getValidityCode(BufferId bufferId, const void *data) const
+QualityCode LowLevelBufferHandler::getQualityCode(BufferId bufferId, const void *data) const
 {
     char *metaData = (char*)data;
-    char *bufferData = metaData + getMetaDataSize();
-    char *qualityData = bufferData + getBufferDataSize();
-    ValidityCode result;
-    memcpy(&result, qualityData + sizeof(ValidityCode) * bufferId, sizeof(ValidityCode));
+    char *buffersData = metaData + internal.META_DATA_SIZE_BYTES;
+    char *qualityData = buffersData + internal.BUFFERS_DATA_SIZE_BYTES;
+    QualityCode result;
+    memcpy(&result, qualityData + sizeof(QualityCode) * bufferId, sizeof(QualityCode));
     return result;
 }
 
-void LowLevelBufferHandler::setValidityCode(BufferId bufferId, ValidityCode code, const void *data) const
+void LowLevelBufferHandler::setQualityCode(BufferId bufferId, QualityCode code, const void *data) const
 {
     char *metaData = (char*)data;
-    char *bufferData = metaData + getMetaDataSize();
-    char *qualityData = bufferData + getBufferDataSize();
-    memcpy(qualityData + sizeof(ValidityCode) * bufferId, &code, sizeof(ValidityCode));
+    char *buffersData = metaData + internal.META_DATA_SIZE_BYTES;
+    char *qualityData = buffersData + internal.BUFFERS_DATA_SIZE_BYTES;
+    memcpy(qualityData + sizeof(QualityCode) * bufferId, &code, sizeof(QualityCode));
 }

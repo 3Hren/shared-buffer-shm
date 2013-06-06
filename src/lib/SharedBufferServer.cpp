@@ -17,7 +17,7 @@ SharedBufferServer::SharedBufferServer(const QString &name, BufferId buffersCoun
 void SharedBufferServer::execute()
 {
     LowLevelBufferHandler manager(buffersCount, bufferSize);
-    bool isCreated = shared->create(manager.getDataLength());
+    bool isCreated = shared->create(manager.getDataLengthBytes());
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been created: " << std::boolalpha << isCreated);
     if (!isCreated)
         exit(1);
@@ -25,7 +25,7 @@ void SharedBufferServer::execute()
     shared->lock();
     void *data = shared->data();
     void *initialized = manager.createStorage();
-    memcpy(data, initialized, manager.getDataLength());
+    memcpy(data, initialized, manager.getDataLengthBytes());
     shared->unlock();
     delete[] (char*)initialized;
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been initialized with " << shared->size() << " bytes (" << shared->size() / 1024.0 / 1024.0 << " Mbytes)");
