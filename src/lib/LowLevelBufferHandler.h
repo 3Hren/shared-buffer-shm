@@ -38,7 +38,7 @@ public:
     virtual char *getBuffersDump(const void *data) const;
     virtual SignalValue *getBuffer(BufferId bufferId, const void *data) const;
     virtual TimeStamp *getTimeStamps(const void *data) const;
-    //! @todo: ValidityCode getValidityCode(BufferId id, const void *data) const;
+    ValidityCode getValidityCode(BufferId bufferId, const void *data) const;
     //! @todo: void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
 
 private:

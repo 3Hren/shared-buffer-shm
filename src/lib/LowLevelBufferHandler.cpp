@@ -176,3 +176,13 @@ TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
     reverse<TimeStamp>(result);
     return (TimeStamp*)result;
 }
+
+ValidityCode LowLevelBufferHandler::getValidityCode(BufferId bufferId, const void *data) const
+{
+    char *metaData = (char*)data;
+    char *bufferData = metaData + getMetaDataSize();
+    char *qualityData = bufferData + getBufferDataSize();
+    ValidityCode result;
+    memcpy(&result, qualityData + sizeof(ValidityCode) * bufferId, sizeof(ValidityCode));
+    return result;
+}

@@ -319,6 +319,46 @@ TEST(LowLevelBufferHandler, ParseTimestamps) {
     EXPECT_TRUE(0 == std::memcmp(expected, actual.get(), 4 * sizeof(TimeStamp)));
 }
 
+TEST(LowLevelBufferHandler, ParseValidityCode) {
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    BufferPos currentPos = 0;
+    SignalValue buffersDump[] = {
+        4, 1, 2, 3,
+        8, 5, 6, 7,
+        0, 9, 0, 0,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3
+    };
+    ValidityCode validityCodesDump[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    TimeStamp timeStampsDump[] = {9, 6, 7, 8};
+
+    const int length = manager.getDataLength();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    currentPos,
+                                                    buffersDump,
+                                                    validityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+    EXPECT_EQ(0, manager.getValidityCode(0, storage.get()));
+    EXPECT_EQ(1, manager.getValidityCode(1, storage.get()));
+    EXPECT_EQ(2, manager.getValidityCode(2, storage.get()));
+    EXPECT_EQ(3, manager.getValidityCode(3, storage.get()));
+    EXPECT_EQ(4, manager.getValidityCode(4, storage.get()));
+    EXPECT_EQ(5, manager.getValidityCode(5, storage.get()));
+    EXPECT_EQ(6, manager.getValidityCode(6, storage.get()));
+    EXPECT_EQ(7, manager.getValidityCode(7, storage.get()));
+    EXPECT_EQ(8, manager.getValidityCode(8, storage.get()));
+    EXPECT_EQ(9, manager.getValidityCode(9, storage.get()));
+}
+
 //! @note: Пригодится
 
 //for (int i = 0; i < length; ++i)
