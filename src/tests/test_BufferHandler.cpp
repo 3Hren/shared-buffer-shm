@@ -286,6 +286,39 @@ TEST(LowLevelBufferHandler, GetBuffer) {
     EXPECT_TRUE(0 == std::memcmp(expected3, actual3.get(), 4 * sizeof(SignalValue)));
 }
 
+TEST(LowLevelBufferHandler, ParseTimestamps) {
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    BufferPos currentPos = 0;
+    SignalValue buffersDump[] = {
+        4, 1, 2, 3,
+        8, 5, 6, 7,
+        0, 9, 0, 0,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3
+    };
+    ValidityCode validityCodesDump[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    TimeStamp timeStampsDump[] = {9, 6, 7, 8};
+
+    const int length = manager.getDataLength();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    currentPos,
+                                                    buffersDump,
+                                                    validityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+    TimeStamp expected[] = {9, 8, 7, 6};
+    std::unique_ptr<TimeStamp[]> actual(manager.getTimeStamps((void*)storage.get()));
+    EXPECT_TRUE(0 == std::memcmp(expected, actual.get(), 4 * sizeof(TimeStamp)));
+}
+
 //! @note: Пригодится
 
 //for (int i = 0; i < length; ++i)

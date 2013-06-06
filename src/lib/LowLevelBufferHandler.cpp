@@ -171,3 +171,34 @@ SignalValue *LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *dat
     }
     return (SignalValue*)result;
 }
+
+TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
+{
+    char *metaData = (char*)data;
+    char *bufferData = metaData + getMetaDataSize();
+    char *qualityData = bufferData + getBufferDataSize();
+    char *timestampData = qualityData + getQualityDataSize();
+
+    int length = getTimestampDataSize();
+    char *result = new char[length];
+    memset(result, 0, length);
+
+    MetaData meta;
+    memcpy(&meta, metaData, getMetaDataSize());
+    memcpy(result,
+           timestampData + (meta.currentPos + 1) * sizeof(TimeStamp),
+           getTimestampDataSize() - (meta.currentPos + 1) * sizeof(TimeStamp));
+    memcpy(result + getTimestampDataSize() - (meta.currentPos + 1) * sizeof(TimeStamp),
+           timestampData,
+           (meta.currentPos + 1) * sizeof(TimeStamp));
+
+    // Reversing
+    TimeStamp *timestampTmp = (TimeStamp*)result;
+    for (BufferId i = 0; i < bufferSize / 2; ++i) {
+        TimeStamp tmp = timestampTmp[i];
+        timestampTmp[i] = timestampTmp[bufferSize - 1 - i];
+        timestampTmp[bufferSize - 1 - i] = tmp;
+    }
+
+    return (TimeStamp*)result;
+}
