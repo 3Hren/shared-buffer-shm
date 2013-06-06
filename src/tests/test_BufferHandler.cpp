@@ -188,8 +188,8 @@ TEST(LowLevelBufferHandler, MultiplePushWithOverriding) {
 }
 
 TEST(LowLevelBufferHandler, GetBuffersDump) {
-    static const BufferId BUFFERS_COUNT = 10;
-    static const BufferPos BUFFER_SIZE = 4;
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
     LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
 
     BufferPos currentPos = 0;
@@ -243,6 +243,47 @@ TEST(LowLevelBufferHandler, GetBuffersDump) {
     //! Cleanup
     delete[] expected;
     delete[] dump;
+}
+
+TEST(LowLevelBufferHandler, GetBuffer) {
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    BufferPos currentPos = 0;
+    SignalValue buffersDump[] = {
+        4, 1, 2, 3,
+        8, 5, 6, 7,
+        0, 9, 0, 0,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3
+    };
+    ValidityCode validityCodesDump[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    TimeStamp timeStampsDump[] = {4, 1, 2, 3};
+
+    const int length = manager.getDataLength();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    currentPos,
+                                                    buffersDump,
+                                                    validityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+    SignalValue expected1[] = {4, 3, 2, 1};
+    std::unique_ptr<SignalValue[]> actual1(manager.getBuffer(0, (void*)storage.get()));
+    EXPECT_TRUE(0 == std::memcmp(expected1, actual1.get(), 4 * sizeof(SignalValue)));
+
+    SignalValue expected2[] = {8, 7, 6, 5};
+    std::unique_ptr<SignalValue[]> actual2(manager.getBuffer(1, (void*)storage.get()));
+    EXPECT_TRUE(0 == std::memcmp(expected2, actual2.get(), 4 * sizeof(SignalValue)));
+
+    SignalValue expected3[] = {0, 0, 0, 9};
+    std::unique_ptr<SignalValue[]> actual3(manager.getBuffer(2, (void*)storage.get()));
+    EXPECT_TRUE(0 == std::memcmp(expected3, actual3.get(), 4 * sizeof(SignalValue)));
 }
 
 //! @note: Пригодится

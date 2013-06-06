@@ -23,6 +23,11 @@ quint16 LowLevelBufferHandler::getMetaDataSize() const
     return sizeof(MetaData);
 }
 
+quint32 LowLevelBufferHandler::getBufferDataSizeBytes() const
+{
+    return bufferSize * sizeof(SignalValue);
+}
+
 quint32 LowLevelBufferHandler::getBufferDataSize() const
 {
     return buffersCount * bufferSize * sizeof(SignalValue);
@@ -101,10 +106,10 @@ char *LowLevelBufferHandler::getBuffersDump(const void *data) const
     for (BufferId bufferId = 0; bufferId < buffersCount; ++bufferId) {
         memcpy(resultBufferData + bufferId * bufferSize * sizeof(SignalValue),
                bufferData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
-               bufferSize * sizeof(SignalValue) - (meta.currentPos + 1)* sizeof(SignalValue));
-        memcpy(resultBufferData + bufferId * bufferSize * sizeof(SignalValue) + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1)* sizeof(SignalValue),
+               bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue));
+        memcpy(resultBufferData + bufferId * bufferSize * sizeof(SignalValue) + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
                bufferData + bufferId * bufferSize * sizeof(SignalValue),
-               (meta.currentPos + 1)* sizeof(SignalValue));
+               (meta.currentPos + 1) * sizeof(SignalValue));
     }
 
     // Reversing
@@ -135,4 +140,34 @@ char *LowLevelBufferHandler::getBuffersDump(const void *data) const
     }
 
     return result;
+}
+
+SignalValue *LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *data) const
+{
+    char *metaData = (char*)data;
+    char *bufferData = metaData + getMetaDataSize();
+
+    int length = getBufferDataSizeBytes();
+    char *result = new char[length];
+    char *resultBufferData = result;
+    memset(result, 0, length);
+
+    MetaData meta;
+    memcpy(&meta, metaData, getMetaDataSize());
+
+    memcpy(resultBufferData,
+           bufferData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
+           bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue));
+    memcpy(resultBufferData + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
+           bufferData + bufferId * bufferSize * sizeof(SignalValue),
+           (meta.currentPos + 1) * sizeof(SignalValue));
+
+    // Reversing
+    SignalValue *buffersTmp = (SignalValue*)resultBufferData;
+    for (BufferId i = 0; i < bufferSize / 2; ++i) {
+        SignalValue tmp = buffersTmp[i];
+        buffersTmp[i] = buffersTmp[bufferSize - 1 - i];
+        buffersTmp[bufferSize - 1 - i] = tmp;
+    }
+    return (SignalValue*)result;
 }

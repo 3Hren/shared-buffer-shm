@@ -26,6 +26,7 @@ public:
     BufferPos getBufferSize() const;
 
     quint16 getMetaDataSize() const;
+    quint32 getBufferDataSizeBytes() const;
     quint32 getBufferDataSize() const;
     quint32 getQualityDataSize() const;
     quint32 getTimestampDataSize() const;
@@ -35,7 +36,7 @@ public:
     virtual void *createStorage() const;
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
     virtual char *getBuffersDump(const void *data) const;
-    //! @todo: SignalValue *getBuffer(BufferId id, const void *data) const;
+    virtual SignalValue *getBuffer(BufferId bufferId, const void *data) const;
     //! @todo: TimeStamp *getTimeStamps(const void *data) const;
     //! @todo: ValidityCode getValidityCode(BufferId id, const void *data) const;
     //! @todo: void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
