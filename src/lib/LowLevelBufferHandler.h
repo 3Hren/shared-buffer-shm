@@ -40,4 +40,18 @@ public:
     virtual TimeStamp *getTimeStamps(const void *data) const;
     //! @todo: ValidityCode getValidityCode(BufferId id, const void *data) const;
     //! @todo: void setValidityCode(BufferId id, ValidityCode code, const void *data) const;
+
+private:
+    template<typename T>
+    void reverse(char *data) const;
 };
+
+template<typename T>
+void LowLevelBufferHandler::reverse(char *data) const {
+    T *tempArray = (T*)data;
+    for (BufferId i = 0; i < bufferSize / 2; ++i) {
+        T tmp = tempArray[i];
+        tempArray[i] = tempArray[bufferSize - 1 - i];
+        tempArray[bufferSize - 1 - i] = tmp;
+    }
+}

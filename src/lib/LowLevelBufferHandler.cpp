@@ -113,14 +113,8 @@ char *LowLevelBufferHandler::getBuffersDump(const void *data) const
     }
 
     // Reversing
-    for (BufferId bufferId = 0; bufferId < buffersCount; ++bufferId) {
-        SignalValue *buffersTmp = (SignalValue*)(resultBufferData + bufferId * bufferSize * sizeof(SignalValue));
-        for (BufferId i = 0; i < bufferSize / 2; ++i) {
-            SignalValue tmp = buffersTmp[i];
-            buffersTmp[i] = buffersTmp[bufferSize - 1 - i];
-            buffersTmp[bufferSize - 1 - i] = tmp;
-        }
-    }
+    for (BufferId bufferId = 0; bufferId < buffersCount; ++bufferId)
+        reverse<SignalValue>(resultBufferData + bufferId * bufferSize * sizeof(SignalValue));
 
     memcpy(resultQualityData, qualityData, getQualityDataSize());
 
@@ -131,14 +125,7 @@ char *LowLevelBufferHandler::getBuffersDump(const void *data) const
            timestampData,
            (meta.currentPos + 1) * sizeof(TimeStamp));
 
-    // Reversing
-    TimeStamp *timestampTmp = (TimeStamp*)(resultTimestampsData);
-    for (BufferId i = 0; i < bufferSize / 2; ++i) {
-        TimeStamp tmp = timestampTmp[i];
-        timestampTmp[i] = timestampTmp[bufferSize - 1 - i];
-        timestampTmp[bufferSize - 1 - i] = tmp;
-    }
-
+    reverse<TimeStamp>(resultTimestampsData);
     return result;
 }
 
@@ -162,13 +149,7 @@ SignalValue *LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *dat
            bufferData + bufferId * bufferSize * sizeof(SignalValue),
            (meta.currentPos + 1) * sizeof(SignalValue));
 
-    // Reversing
-    SignalValue *buffersTmp = (SignalValue*)resultBufferData;
-    for (BufferId i = 0; i < bufferSize / 2; ++i) {
-        SignalValue tmp = buffersTmp[i];
-        buffersTmp[i] = buffersTmp[bufferSize - 1 - i];
-        buffersTmp[bufferSize - 1 - i] = tmp;
-    }
+    reverse<SignalValue>(result);
     return (SignalValue*)result;
 }
 
@@ -192,13 +173,6 @@ TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
            timestampData,
            (meta.currentPos + 1) * sizeof(TimeStamp));
 
-    // Reversing
-    TimeStamp *timestampTmp = (TimeStamp*)result;
-    for (BufferId i = 0; i < bufferSize / 2; ++i) {
-        TimeStamp tmp = timestampTmp[i];
-        timestampTmp[i] = timestampTmp[bufferSize - 1 - i];
-        timestampTmp[bufferSize - 1 - i] = tmp;
-    }
-
+    reverse<TimeStamp>(result);
     return (TimeStamp*)result;
 }
