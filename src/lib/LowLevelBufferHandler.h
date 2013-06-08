@@ -1,18 +1,7 @@
 #pragma once
 
 #include "SharedBufferGlobal.h"
-
-#include <cstring>
-
-struct MetaData {
-    BufferPos currentPos;
-    char empty[124];
-
-    MetaData() : currentPos(0) {
-        std::memset(empty, 0, 124);
-    }
-};
-static_assert(sizeof(MetaData) == 128, "sizeof(MetaData) must be 128");
+#include "domain/MetaData.h"
 
 class LowLevelBufferHandler
 {

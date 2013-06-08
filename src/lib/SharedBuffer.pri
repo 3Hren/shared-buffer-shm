@@ -19,7 +19,8 @@ HEADERS += \
     QtBasedSharedMemory.h \
     BeanFactory.h \
     ThreadSafeQueue.h \
-    domain/Buffer.h
+    domain/Buffer.h \
+    domain/MetaData.h
 
 SOURCES += \
     SharedBufferWriter.cpp \

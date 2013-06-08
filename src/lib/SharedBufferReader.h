@@ -10,8 +10,6 @@ public:
     //! --- BufferReader ---
     //! @todo: BuffersDump getBuffersDump() const &&;
     //! @todo: BuffersDump { vector<Buffer>; vector<TimeStamp>; }
-    //! @todo: Buffer getBuffer(BufferId id) const;
-    //! @todo: Buffer { vector<SignalValue>; QualityCode code; }
     //! @todo: vector<TimeStamp> getTimeStamps() const;
     //! @todo: QualityCode getValueCode(BufferId id) const;
 

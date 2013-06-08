@@ -137,9 +137,7 @@ char *LowLevelBufferHandler::getBuffersDump(const void *data) const
 
 SignalValue *LowLevelBufferHandler::getRawBuffer(BufferId bufferId, const void *data) const
 {
-    if (bufferId >= buffersCount)
-        throw IllegalValueException(QString("Buffer id (%1) should be in range [0, %2]").arg(bufferId).arg(buffersCount - 1).toStdString());
-
+    checkBufferId(bufferId);
     char *raw = new char[internal->BUFFER_DATA_SIZE_BYTES];
     SignalValue *buffer = reinterpret_cast<SignalValue*>(raw);
     parseBuffer(bufferId, data, buffer);
@@ -171,9 +169,7 @@ TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
 
 QualityCode LowLevelBufferHandler::getQualityCode(BufferId bufferId, const void *data) const
 {
-    if (bufferId >= buffersCount)
-        throw IllegalValueException(QString("Buffer id (%1) should be in range [0, %2]").arg(bufferId).arg(buffersCount - 1).toStdString());
-
+    checkBufferId(bufferId);
     char *metaData = (char*)data;
     char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
     char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
@@ -184,9 +180,7 @@ QualityCode LowLevelBufferHandler::getQualityCode(BufferId bufferId, const void 
 
 void LowLevelBufferHandler::setQualityCode(BufferId bufferId, QualityCode code, const void *data) const
 {
-    if (bufferId >= buffersCount)
-        throw IllegalValueException(QString("Buffer id (%1) should be in range [0, %2]").arg(bufferId).arg(buffersCount - 1).toStdString());
-
+    checkBufferId(bufferId);
     char *metaData = (char*)data;
     char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
     char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
