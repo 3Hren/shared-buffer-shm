@@ -45,7 +45,7 @@ void _Pusher::push()
     static int counter = 0;
     counter++;
     boost::scoped_array<SignalValue>data(new SignalValue[buffersCount]);
-    for (int i = 0; i < buffersCount; ++i)
+    for (BufferId i = 0; i < buffersCount; ++i)
         data[i] = counter;
 
     boost::timer::cpu_timer timer;

@@ -5,15 +5,11 @@ TEST(SharedBufferWriter, Class) {
     Q_UNUSED(writer);
 }
 
-class SharedBufferWriterTest : public Test {
+class SharedBufferHandlerTest : public Test {
 protected:
     NiceMock<SharedMemoryMock> sharedMemory;
     NiceMock<LowLevelBufferHandlerMock> lowLevelBufferHandler;
-    SharedBufferWriter writer;
     void SetUp() {
-        writer.setLowLevelBufferHandler(&lowLevelBufferHandler);
-        writer.setSharedMemory(&sharedMemory);
-
         ON_CALL(sharedMemory, isAttached())
                 .WillByDefault(Return(true));
         ON_CALL(sharedMemory, getErrorDescription())
@@ -22,6 +18,16 @@ protected:
                 .WillByDefault(Return(true));
         ON_CALL(sharedMemory, unlock())
                 .WillByDefault(Return(true));
+    }
+};
+
+class SharedBufferWriterTest : public SharedBufferHandlerTest {
+protected:
+    SharedBufferWriter writer;
+    void SetUp() {
+        SharedBufferHandlerTest::SetUp();
+        writer.setLowLevelBufferHandler(&lowLevelBufferHandler);
+        writer.setSharedMemory(&sharedMemory);
     }
 };
 
@@ -47,16 +53,44 @@ TEST_F(SharedBufferWriterTest, CallsLowLevelBufferHandlerPushMethodWhenPushInvok
     writer.push(timestamp, signalsPack);
 }
 
-/*! @todo:
- * Привет, я из будущего!
- * Пишу тебе этот абзац, чтобы вспомнить то, что писал.
- * Закончил я на этом тесте. Все теги todo описаны.
- * Продолжать разработку классов SharedBufferReader/Writer.
- * Внедрять новые низкоуровневые методы.
- * Разобраться с высокоуровневыми методами.
- */
-
 TEST(SharedBufferReader, Class) {
     SharedBufferReader reader;
     Q_UNUSED(reader);
+}
+
+class SharedBufferReaderTest : public SharedBufferHandlerTest {
+protected:
+    SharedBufferReader reader;
+    void SetUp() {
+        SharedBufferHandlerTest::SetUp();
+        reader.setLowLevelBufferHandler(&lowLevelBufferHandler);
+        reader.setSharedMemory(&sharedMemory);
+    }
+};
+
+TEST_F(SharedBufferReaderTest, GetBuffer) {
+    SignalValue *signalValues = new SignalValue[4]{0.0, 1.0, 2.5, 5.0};
+    int length = lowLevelBufferHandler.getDataLengthBytes();
+    std::unique_ptr<char[]>data(new char[length]);
+    std::memset(data.get(), 0, length);
+    std::memcpy(data.get() + sizeof(MetaData) + 1 * sizeof(SignalValue) * lowLevelBufferHandler.getBufferSize(),
+                signalValues,
+                4 * sizeof(SignalValue));
+
+    EXPECT_CALL(sharedMemory, lock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, unlock())
+            .Times(1);    
+    EXPECT_CALL(sharedMemory, constData())
+            .Times(1)
+            .WillOnce(Return(data.get()));
+    EXPECT_CALL(lowLevelBufferHandler, getQualityCode(1, data.get()))
+            .Times(1)
+            .WillOnce(Return(512));
+
+    Buffer expected = {
+        {0.0, 5.0, 2.5, 1.0},
+        512
+    };
+    EXPECT_EQ(expected, reader.getBuffer(1));
 }

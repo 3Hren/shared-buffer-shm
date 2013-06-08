@@ -1,6 +1,7 @@
 #include "_Dumper.h"
 
 #include "LowLevelBufferHandler.h"
+#include "SharedBufferReader.h"
 
 #include <log4cxx/logger.h>
 
@@ -12,18 +13,27 @@
 #include <QDebug>
 
 _Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
-    _SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent)
+    _SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent),
+    reader(new SharedBufferReader)
+{    
+    reader->setLowLevelBufferHandler(manager);
+    reader->setSharedMemory(shared);
+}
+
+_Dumper::~_Dumper()
 {
+    delete reader;
 }
 
 void _Dumper::execute()
 {
-    dump();
+    readBuffer();
+    //dump();
 }
 
 void _Dumper::dump()
 {
-    QTimer::singleShot(timeout, this, SLOT(dump()));
+    QTimer::singleShot(timeout, this, SLOT(execute()));
     static int counter = 0;
     counter++;
 
@@ -42,5 +52,17 @@ void _Dumper::dump()
 //    }
 //    qDebug() << v;
 
-    delete[] data;    
+    delete[] data;
+}
+
+void _Dumper::readBuffer()
+{
+    QTimer::singleShot(timeout, this, SLOT(execute()));
+    static int counter = 0;
+    counter++;
+
+    QElapsedTimer timer;
+    timer.start();
+    const Buffer &buffer = reader->getBuffer(0);
+    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Buffer with size " << buffer.values.size() << " read in " << timer.elapsed() << " ms");
 }

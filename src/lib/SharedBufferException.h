@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include <stdexcept>
 #include <QString>
 
 class SharedBufferNotAttachedException : public std::exception {
@@ -24,3 +25,5 @@ public:
         return reason.toUtf8().constData();
     }
 };
+
+typedef std::invalid_argument IllegalValueException;

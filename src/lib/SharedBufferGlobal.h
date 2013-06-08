@@ -3,7 +3,7 @@
 #include <QString>
 
 typedef quint32 BufferPos;
-typedef quint16 BufferId;
+typedef quint32 BufferId;
 typedef float SignalValue;
 typedef quint64 TimeStamp;
 typedef quint16 QualityCode;

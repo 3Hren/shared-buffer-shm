@@ -4,6 +4,7 @@
 #include <boost/shared_array.hpp>
 #include <boost/scoped_array.hpp>
 #include <cstring>
+#include <stdexcept>
 
 TEST(LowLevelBufferHandler, InitializationConstructor) {
     LowLevelBufferHandler manager(64, 1024);
@@ -53,7 +54,7 @@ TEST(LowLevelBufferHandler, Push) {
                                                      length));
 
     boost::scoped_array<SignalValue> signalsPackToPush(new SignalValue[BUFFERS_COUNT]);
-    for (int i = 0; i < BUFFERS_COUNT; ++i)
+    for (BufferId i = 0; i < BUFFERS_COUNT; ++i)
         signalsPackToPush[i] = i;
 
     void *storage = manager.createStorage();
@@ -72,7 +73,7 @@ TEST(LowLevelBufferHandler, MultiplePush) {
     void *storage = manager.createStorage();
     for (int j = 0; j < 3; ++j) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
-        for (int i = 0; i < BUFFERS_COUNT; ++i)
+        for (BufferId i = 0; i < BUFFERS_COUNT; ++i)
             signalsPack[i] = i;
         manager.push(j, signalsPack.get(), storage);
     }
@@ -113,7 +114,7 @@ TEST(LowLevelBufferHandler, MultiplePushWithFullingBuffer) {
     void *storage = manager.createStorage();
     for (int j = 0; j < 4; ++j) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
-        for (int i = 0; i < BUFFERS_COUNT; ++i)
+        for (BufferId i = 0; i < BUFFERS_COUNT; ++i)
             signalsPack[i] = j;
         manager.push(j, signalsPack.get(), (void*)storage);
     }
@@ -155,7 +156,7 @@ TEST(LowLevelBufferHandler, MultiplePushWithOverriding) {
     void *storage = manager.createStorage();
     for (int j = 0; j < 5; ++j) {
         boost::scoped_array<SignalValue> signalsPack(new SignalValue[BUFFERS_COUNT]);
-        for (int i = 0; i < BUFFERS_COUNT; ++i)
+        for (BufferId i = 0; i < BUFFERS_COUNT; ++i)
             signalsPack[i] = j;
         manager.push(j, signalsPack.get(), (void*)storage);
     }
@@ -274,15 +275,15 @@ TEST(LowLevelBufferHandler, GetBuffer) {
                                                     timeStampsDump,
                                                     length));
     SignalValue expected1[] = {4, 3, 2, 1};
-    std::unique_ptr<SignalValue[]> actual1(manager.getBuffer(0, (void*)storage.get()));
+    std::unique_ptr<SignalValue[]> actual1(manager.getRawBuffer(0, (void*)storage.get()));
     EXPECT_TRUE(0 == std::memcmp(expected1, actual1.get(), 4 * sizeof(SignalValue)));
 
     SignalValue expected2[] = {8, 7, 6, 5};
-    std::unique_ptr<SignalValue[]> actual2(manager.getBuffer(1, (void*)storage.get()));
+    std::unique_ptr<SignalValue[]> actual2(manager.getRawBuffer(1, (void*)storage.get()));
     EXPECT_TRUE(0 == std::memcmp(expected2, actual2.get(), 4 * sizeof(SignalValue)));
 
     SignalValue expected3[] = {0, 0, 0, 9};
-    std::unique_ptr<SignalValue[]> actual3(manager.getBuffer(2, (void*)storage.get()));
+    std::unique_ptr<SignalValue[]> actual3(manager.getRawBuffer(2, (void*)storage.get()));
     EXPECT_TRUE(0 == std::memcmp(expected3, actual3.get(), 4 * sizeof(SignalValue)));
 }
 
@@ -407,6 +408,24 @@ TEST(LowLevelBufferHandler, SetQualityCode) {
     manager.setQualityCode(9, 9, storage.get());
 
     EXPECT_TRUE(0 == std::memcmp(expected.get(), storage.get(), length));
+}
+
+TEST(LowLevelBufferHandler, GetBufferThrowsExceptionWhenInvalidArgumentsIsSent) {
+    LowLevelBufferHandler manager(80, 256);
+    EXPECT_THROW(manager.getRawBuffer(-1, 0), std::invalid_argument);
+    EXPECT_THROW(manager.getRawBuffer(80, 0), std::invalid_argument);
+}
+
+TEST(LowLevelBufferHandler, GetQualityThrowsExceptionWhenInvalidArgumentsIsSent) {
+    LowLevelBufferHandler manager(80, 256);
+    EXPECT_THROW(manager.getQualityCode(-1, 0), std::invalid_argument);
+    EXPECT_THROW(manager.getQualityCode(80, 0), std::invalid_argument);
+}
+
+TEST(LowLevelBufferHandler, SetQualityThrowsExceptionWhenInvalidArgumentsIsSent) {
+    LowLevelBufferHandler manager(80, 256);
+    EXPECT_THROW(manager.setQualityCode(-1, 1, 0), std::invalid_argument);
+    EXPECT_THROW(manager.setQualityCode(80, 1, 0), std::invalid_argument);
 }
 
 //! @note: Пригодится

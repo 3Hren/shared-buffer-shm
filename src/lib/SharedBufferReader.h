@@ -1,10 +1,12 @@
 #pragma once
 
 #include "AbstractSharedBufferHandler.h"
+#include "domain/Buffer.h"
 
 class SharedBufferReader : public AbstractSharedBufferHandler
 {
 public:
+    Buffer getBuffer(BufferId bufferId) const;
     //! --- BufferReader ---
     //! @todo: BuffersDump getBuffersDump() const &&;
     //! @todo: BuffersDump { vector<Buffer>; vector<TimeStamp>; }

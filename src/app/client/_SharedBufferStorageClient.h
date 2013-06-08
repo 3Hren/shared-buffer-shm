@@ -3,7 +3,7 @@
 #include <QObject>
 #include "SharedBufferGlobal.h"
 
-class QSharedMemory;
+class SharedMemory;
 class LowLevelBufferHandler;
 class _SharedBufferStorageClient : public QObject
 {
@@ -14,7 +14,7 @@ protected:
     BufferPos bufferSize;
     int timeout;
     LowLevelBufferHandler *manager;
-    QSharedMemory *shared;
+    SharedMemory *shared;
 public:
     _SharedBufferStorageClient(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent = 0);
     ~_SharedBufferStorageClient();

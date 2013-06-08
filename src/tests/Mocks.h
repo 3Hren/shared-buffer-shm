@@ -4,10 +4,12 @@
 
 class LowLevelBufferHandlerMock : public LowLevelBufferHandler {
 public:
-    LowLevelBufferHandlerMock() : LowLevelBufferHandler(0, 0) {}
+    LowLevelBufferHandlerMock() : LowLevelBufferHandler(10, 4) {}
     MOCK_CONST_METHOD0(createStorage, void*());
     MOCK_CONST_METHOD3(push, void(TimeStamp, const SignalValue*, const void*));
     MOCK_CONST_METHOD1(getBuffersDump, char*(const void*));
+    MOCK_CONST_METHOD2(getRawBuffer, SignalValue*(BufferId, const void*));
+    MOCK_CONST_METHOD2(getQualityCode, QualityCode(BufferId, const void*));
 };
 
 class SharedMemoryMock : public SharedMemory {
@@ -17,7 +19,7 @@ public:
     MOCK_METHOD1(attach, bool(AccessMode));
     MOCK_CONST_METHOD0(isAttached, bool());
 
-    MOCK_CONST_METHOD0(constData, void*());
+    MOCK_CONST_METHOD0(constData, const void*());
     MOCK_METHOD0(data, void*());
 
     MOCK_METHOD1(setKey, void(const QString&));

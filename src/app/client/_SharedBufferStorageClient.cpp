@@ -1,8 +1,8 @@
 #include "_SharedBufferStorageClient.h"
 
 #include "LowLevelBufferHandler.h"
+#include "QtBasedSharedMemory.h"
 
-#include <QSharedMemory>
 #include <QTimer>
 #include <QDebug>
 
@@ -15,13 +15,15 @@ _SharedBufferStorageClient::_SharedBufferStorageClient(const QString &name, Buff
     bufferSize(bufferSize),
     timeout(timeout)
 {
-    shared = new QSharedMemory(name, this);
+    shared = new QtBasedSharedMemory;
+    shared->setKey(name);
     manager = new LowLevelBufferHandler(buffersCount, bufferSize);
 }
 
 _SharedBufferStorageClient::~_SharedBufferStorageClient()
-{
+{    
     delete manager;
+    delete shared;
 }
 
 void _SharedBufferStorageClient::connectAndRun()
@@ -29,7 +31,7 @@ void _SharedBufferStorageClient::connectAndRun()
     const bool isAttached = shared->attach();
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been attached: " << std::boolalpha << isAttached);
     if (!shared->isAttached()) {
-        LOG4CXX_FATAL(log4cxx::Logger::getRootLogger(), "Shared memory segment attaching failed: " << shared->errorString().toStdString());
+        LOG4CXX_FATAL(log4cxx::Logger::getRootLogger(), "Shared memory segment attaching failed: " << shared->getErrorDescription().toStdString());
         exit(1);
     }
     QTimer::singleShot(timeout, this, SLOT(execute()));
