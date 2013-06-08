@@ -13,11 +13,6 @@
 #include <QCoreApplication>
 #include <QSettings>
 
-void terminateHandler(int i) {
-    qDebug() << i;
-    qApp->quit();
-}
-
 int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);
     app.setApplicationName("SharedBufferClient");
@@ -38,7 +33,10 @@ int main(int argc, char **argv) {
     qDebug() << "USAGE: [TYPE](1 - _Pusher, 2 - _Dumper) [NAME] [BUFFERS_COUNT] [BUFFER_SIZE] [TIMEOUT]";
 
     struct sigaction sa;
-    sa.sa_handler = terminateHandler;
+    sa.sa_handler = [](int signal_id){
+        LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Received signal: " << signal_id << " - " << strsignal(signal_id) << ". Exiting ...");
+        qApp->quit();
+    };
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = 0;
     sigaction(SIGINT, &sa, 0);

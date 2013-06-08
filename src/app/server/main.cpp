@@ -13,7 +13,6 @@
 void setSignalHandler() {
     struct sigaction sa;
     sa.sa_handler = [](int signal_id){
-        std::cerr << std::endl;
         LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Received signal: " << signal_id << " - " << strsignal(signal_id) << ". Exiting ...");
         qApp->quit();
     };
