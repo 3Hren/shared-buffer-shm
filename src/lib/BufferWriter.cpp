@@ -34,5 +34,10 @@ void BufferWriter::start()
 void BufferWriter::push(TimeStamp timeStamp, SignalValue *signalValues)
 {
     SignalPack pack(timeStamp, signalValues, sharedBufferWriter->getBuffersCount());
+    queue.push(std::move(pack));
+}
+
+void BufferWriter::push(const SignalPack &pack)
+{
     queue.push(pack);
 }

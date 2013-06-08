@@ -9,8 +9,7 @@ public:
     Buffer getBuffer(BufferId bufferId) const;
     BuffersDump getBuffersDump() const;
     QVector<TimeStamp> getTimestamps() const;
-    //! --- BufferReader ---
-    //! @todo: QualityCode getValueCode(BufferId id) const;
+    QualityCode getQualityCode(BufferId bufferId) const;
 
 protected:
     SharedMemory::AccessMode getAcessMode() const override final;

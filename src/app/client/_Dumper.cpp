@@ -38,21 +38,13 @@ void _Dumper::dump()
     counter++;
 
     boost::timer::cpu_timer timer;
-    //shared->lock();
-    //LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Lock acquired");
-    reader->getBuffersDump();
-    //char *data = manager->getBuffersDump(shared->data());
+    BuffersDump dump = reader->getBuffersDump();
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
-    //shared->unlock();
-//    QVector<SignalValue> v;
-//    for (int i = 0; i < bufferSize; ++i) {
-//        SignalValue f;
-//        memcpy(&f, data + sizeof(SignalValue) * i, sizeof(SignalValue));
-//        v.append(f);
-//    }
-//    qDebug() << v;
-
-    //delete[] data;
+#ifdef DEBUG
+    for (const Buffer &buffer : dump.buffers) {
+        qDebug() << buffer;
+    }
+#endif
 }
 
 void _Dumper::readBuffer()

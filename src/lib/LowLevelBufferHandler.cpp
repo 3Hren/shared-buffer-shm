@@ -97,7 +97,7 @@ void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signals
     memcpy(timestampData + meta.currentPos * sizeof(TimeStamp), &timestamp, sizeof(TimeStamp));
 }
 
-char *LowLevelBufferHandler::getBuffersDump(const void *data) const
+char *LowLevelBufferHandler::getRawBuffersDump(const void *data) const
 {        
     char *metaData = (char*)data;
     char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
@@ -148,6 +148,11 @@ SignalValue *LowLevelBufferHandler::getRawBuffer(BufferId bufferId, const void *
     return buffer;
 }
 
+QVector<SignalValue> LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *data) const
+{
+    return getBuffer<QVector>(bufferId, data);
+}
+
 TimeStamp *LowLevelBufferHandler::getRawTimeStamps(const void *data) const
 {
     char *result = new char[internal->TIMESTAMP_DATA_SIZE_BYTES];
@@ -158,9 +163,7 @@ TimeStamp *LowLevelBufferHandler::getRawTimeStamps(const void *data) const
 
 QVector<TimeStamp> LowLevelBufferHandler::getTimestamps(const void *data) const
 {
-    QVector<TimeStamp> timestamps(bufferSize);
-    parseTimestamps(data, timestamps.data());
-    return timestamps;
+    return getTimestamps<QVector>(data);
 }
 
 QualityCode LowLevelBufferHandler::getQualityCode(BufferId bufferId, const void *data) const
@@ -195,7 +198,6 @@ void LowLevelBufferHandler::parseBuffer(BufferId bufferId, const void *from, con
 
     MetaData meta;
     memcpy(&meta, metaData, internal->META_DATA_SIZE_BYTES);
-
     memcpy(resultBuffersData,
            buffersData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
            bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue));
@@ -208,9 +210,9 @@ void LowLevelBufferHandler::parseBuffer(BufferId bufferId, const void *from, con
 
 void LowLevelBufferHandler::parseTimestamps(const void *from, TimeStamp *to) const
 {
-    char *data = reinterpret_cast<char *>(const_cast<void *>(from));
-    char *metaData = data;
-    char *timestampData = data + internal->TIMESTAMPS_OFFSET;
+    const char *data = reinterpret_cast<const char *>(from);
+    const char *metaData = data;
+    const char *timestampData = data + internal->TIMESTAMPS_OFFSET;
 
     char *result = reinterpret_cast<char *>(to);
     memset(result, 0, internal->TIMESTAMP_DATA_SIZE_BYTES);

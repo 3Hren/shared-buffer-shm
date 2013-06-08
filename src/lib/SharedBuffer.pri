@@ -7,8 +7,7 @@ LIBS += \
 
 HEADERS += \
     SharedBufferGlobal.h \
-    SharedBufferWriter.h \
-    SignalPack.h \
+    SharedBufferWriter.h \    
     SharedBufferException.h \
     BufferWriter.h \
     LowLevelBufferHandler.h \
@@ -19,6 +18,7 @@ HEADERS += \
     QtBasedSharedMemory.h \
     BeanFactory.h \
     ThreadSafeQueue.h \
+    domain/SignalPack.h \
     domain/Buffer.h \
     domain/MetaData.h
 

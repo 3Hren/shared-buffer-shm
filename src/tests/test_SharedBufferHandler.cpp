@@ -127,3 +127,17 @@ TEST_F(SharedBufferReaderTest, GetBuffersDump) {
 
     reader.getBuffersDump();
 }
+
+TEST_F(SharedBufferReaderTest, GetQualityCode) {
+    EXPECT_CALL(sharedMemory, lock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, unlock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, constData())
+            .Times(1)
+            .WillOnce(Return(nullptr));
+    EXPECT_CALL(lowLevelBufferHandler, getQualityCode(0, _))
+            .Times(1)
+            .WillOnce(Return(512));
+    reader.getQualityCode(0);
+}

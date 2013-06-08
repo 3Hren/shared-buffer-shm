@@ -48,6 +48,14 @@ QVector<TimeStamp> SharedBufferReader::getTimestamps() const
     return timestamps;
 }
 
+QualityCode SharedBufferReader::getQualityCode(BufferId bufferId) const
+{
+    sharedMemory->lock();
+    QualityCode qualityCode = lowLevelBufferHandler->getQualityCode(bufferId, sharedMemory->constData());
+    sharedMemory->unlock();
+    return qualityCode;
+}
+
 SharedMemory::AccessMode SharedBufferReader::getAcessMode() const
 {
     return SharedMemory::AccessMode::ReadOnly;

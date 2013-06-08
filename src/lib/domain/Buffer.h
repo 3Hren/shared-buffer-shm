@@ -20,3 +20,15 @@ struct BuffersDump {
         return timestamps == other.timestamps && buffers == other.buffers;
     }
 };
+
+#ifdef DEBUG
+#include <QDebug>
+#include <QStringList>
+inline QDebug operator <<(QDebug debug, const Buffer &buffer) {
+    QStringList values;
+    for(auto value : buffer.values)
+        values << QString::number(value);
+    debug << QString("Buffer(%1 : %2)").arg(values.join(", ")).arg(buffer.quality).toLatin1().constData();
+    return debug;
+}
+#endif

@@ -238,7 +238,7 @@ TEST(LowLevelBufferHandler, GetBuffersDump) {
     memcpy(expected + (BUFFERS_COUNT * BUFFER_SIZE) * sizeof(SignalValue), expectedQualityCodes, BUFFERS_COUNT * sizeof(QualityCode));
     memcpy(expected + (BUFFERS_COUNT * BUFFER_SIZE) * sizeof(SignalValue) + BUFFERS_COUNT * sizeof(QualityCode), expectedTimeStamps, BUFFER_SIZE * sizeof(TimeStamp));
 
-    char *dump = manager.getBuffersDump((void*)storage.get());
+    char *dump = manager.getRawBuffersDump((void*)storage.get());
     EXPECT_TRUE(0 == std::memcmp(expected, dump, dumpLength));
 
     //! Cleanup

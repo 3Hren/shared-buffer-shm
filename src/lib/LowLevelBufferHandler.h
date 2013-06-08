@@ -22,9 +22,9 @@ public:
 
     virtual void *createStorage() const;
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
-    virtual char *getBuffersDump(const void *data) const;
-
+    virtual char *getRawBuffersDump(const void *data) const;
     virtual SignalValue *getRawBuffer(BufferId bufferId, const void *data) const;
+    virtual TimeStamp *getRawTimeStamps(const void *data) const;
 
     template<template<typename ...> class Container>
     Container<SignalValue> getBuffer(BufferId bufferId, const void *data) const {
@@ -33,12 +33,14 @@ public:
         parseBuffer(bufferId, data, values.data());
         return std::move(values);
     }
+    virtual QVector<SignalValue> getBuffer(BufferId bufferId, const void *data) const;
 
-    virtual QVector<SignalValue> getBuffer(BufferId bufferId, const void *data) const {
-        return getBuffer<QVector>(bufferId, data);
+    template<template<typename ...> class Container>
+    Container<TimeStamp> getTimestamps(const void *data) const {
+        Container<TimeStamp> timestamps(bufferSize);
+        parseTimestamps(data, timestamps.data());
+        return timestamps;
     }
-
-    virtual TimeStamp *getRawTimeStamps(const void *data) const;        
     virtual QVector<TimeStamp> getTimestamps(const void *data) const;
 
     virtual QualityCode getQualityCode(BufferId bufferId, const void *data) const;
@@ -48,7 +50,7 @@ private:
     template<typename T>
     void reverse(char *data) const {
         T *tempArray = (T*)data;
-        for (BufferId i = 0; i < bufferSize / 2; ++i) {
+        for (BufferPos i = 0; i < bufferSize / 2; ++i) {
             T tmp = tempArray[i];
             tempArray[i] = tempArray[bufferSize - 1 - i];
             tempArray[bufferSize - 1 - i] = tmp;
