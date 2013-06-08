@@ -4,12 +4,12 @@
 #include "SharedBufferReader.h"
 
 #include <log4cxx/logger.h>
+#include <boost/timer/timer.hpp>
 
-#include <QSharedMemory>
 #include <QTimer>
 #include <QDateTime>
 #include <QCoreApplication>
-#include <QElapsedTimer>
+
 #include <QDebug>
 
 _Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
@@ -27,8 +27,8 @@ _Dumper::~_Dumper()
 
 void _Dumper::execute()
 {
-    readBuffer();
-    //dump();
+    //readBuffer();
+    dump();
 }
 
 void _Dumper::dump()
@@ -37,13 +37,13 @@ void _Dumper::dump()
     static int counter = 0;
     counter++;
 
-    QElapsedTimer timer;
-    timer.start();    
-    shared->lock();
-    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Lock acquired");
-    char *data = manager->getBuffersDump(shared->data());
-    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed() << " ms");
-    shared->unlock();    
+    boost::timer::cpu_timer timer;
+    //shared->lock();
+    //LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Lock acquired");
+    reader->getBuffersDump();
+    //char *data = manager->getBuffersDump(shared->data());
+    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
+    //shared->unlock();
 //    QVector<SignalValue> v;
 //    for (int i = 0; i < bufferSize; ++i) {
 //        SignalValue f;
@@ -52,7 +52,7 @@ void _Dumper::dump()
 //    }
 //    qDebug() << v;
 
-    delete[] data;
+    //delete[] data;
 }
 
 void _Dumper::readBuffer()
@@ -61,8 +61,7 @@ void _Dumper::readBuffer()
     static int counter = 0;
     counter++;
 
-    QElapsedTimer timer;
-    timer.start();
+    boost::timer::cpu_timer timer;
     const Buffer &buffer = reader->getBuffer(0);
-    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Buffer with size " << buffer.values.size() << " read in " << timer.elapsed() << " ms");
+    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Buffer with size " << buffer.values.size() << " read in " << timer.elapsed().wall / 1.0e6 << " ms");
 }

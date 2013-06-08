@@ -69,22 +69,17 @@ protected:
 };
 
 TEST_F(SharedBufferReaderTest, GetBuffer) {
-    SignalValue *signalValues = new SignalValue[4]{0.0, 1.0, 2.5, 5.0};
-    int length = lowLevelBufferHandler.getDataLengthBytes();
-    std::unique_ptr<char[]>data(new char[length]);
-    std::memset(data.get(), 0, length);
-    std::memcpy(data.get() + sizeof(MetaData) + 1 * sizeof(SignalValue) * lowLevelBufferHandler.getBufferSize(),
-                signalValues,
-                4 * sizeof(SignalValue));
-
     EXPECT_CALL(sharedMemory, lock())
             .Times(1);
     EXPECT_CALL(sharedMemory, unlock())
             .Times(1);    
     EXPECT_CALL(sharedMemory, constData())
             .Times(1)
-            .WillOnce(Return(data.get()));
-    EXPECT_CALL(lowLevelBufferHandler, getQualityCode(1, data.get()))
+            .WillOnce(Return(nullptr));
+    EXPECT_CALL(lowLevelBufferHandler, getBuffer(1, _))
+            .Times(1)
+            .WillOnce(Return(QVector<SignalValue>({0.0, 5.0, 2.5, 1.0})));
+    EXPECT_CALL(lowLevelBufferHandler, getQualityCode(1, _))
             .Times(1)
             .WillOnce(Return(512));
 
@@ -93,4 +88,42 @@ TEST_F(SharedBufferReaderTest, GetBuffer) {
         512
     };
     EXPECT_EQ(expected, reader.getBuffer(1));
+}
+
+TEST_F(SharedBufferReaderTest, GetTimestamps) {
+    EXPECT_CALL(sharedMemory, lock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, unlock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, constData())
+            .Times(1)
+            .WillOnce(Return(nullptr));
+    EXPECT_CALL(lowLevelBufferHandler, getTimestamps(_))
+            .Times(1)
+            .WillOnce(Return(QVector<TimeStamp>({8, 7, 6, 5})));
+    reader.getTimestamps();
+}
+
+TEST_F(SharedBufferReaderTest, GetBuffersDump) {
+    std::unique_ptr<char[]> data(new char[lowLevelBufferHandler.getDataLengthBytes()]);
+    EXPECT_CALL(sharedMemory, lock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, unlock())
+            .Times(1);
+    EXPECT_CALL(sharedMemory, constData())
+            .Times(1)
+            .WillOnce(Return(data.get()));
+
+    const BufferId count = lowLevelBufferHandler.getBuffersCount();
+    EXPECT_CALL(lowLevelBufferHandler, getTimestamps(_))
+            .Times(1)
+            .WillOnce(Return(QVector<TimeStamp>()));
+    EXPECT_CALL(lowLevelBufferHandler, getBuffer(AnyOf(Ge(0), Le(count - 1)), _))
+            .Times(count)
+            .WillRepeatedly(Return(QVector<SignalValue>()));
+    EXPECT_CALL(lowLevelBufferHandler, getQualityCode(AnyOf(Ge(0), Le(count - 1)), _))
+            .Times(count)
+            .WillRepeatedly(Return(0));
+
+    reader.getBuffersDump();
 }

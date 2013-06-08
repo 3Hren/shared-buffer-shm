@@ -11,12 +11,16 @@ struct Internal {
     const quint32 QUALITY_DATA_SIZE_BYTES;
     const quint32 TIMESTAMP_DATA_SIZE_BYTES;
 
+    const quint32 TIMESTAMPS_OFFSET;
+
     constexpr Internal(BufferPos size, BufferId count) :
         META_DATA_SIZE_BYTES(sizeof(MetaData)),
         BUFFER_DATA_SIZE_BYTES(size * sizeof(SignalValue)),
         BUFFERS_DATA_SIZE_BYTES(count * size * sizeof(SignalValue)),
         QUALITY_DATA_SIZE_BYTES(count * sizeof(QualityCode)),
-        TIMESTAMP_DATA_SIZE_BYTES(size * sizeof(TimeStamp))
+        TIMESTAMP_DATA_SIZE_BYTES(size * sizeof(TimeStamp)),
+
+        TIMESTAMPS_OFFSET(sizeof(MetaData) + count * size * sizeof(SignalValue) + count * sizeof(QualityCode))
     {}
 
     inline constexpr quint32 getDataLengthBytes() const {
@@ -144,27 +148,19 @@ SignalValue *LowLevelBufferHandler::getRawBuffer(BufferId bufferId, const void *
     return buffer;
 }
 
-TimeStamp *LowLevelBufferHandler::getTimeStamps(const void *data) const
+TimeStamp *LowLevelBufferHandler::getRawTimeStamps(const void *data) const
 {
-    char *metaData = (char*)data;
-    char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
-    char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
-    char *timestampData = qualityData + internal->QUALITY_DATA_SIZE_BYTES;
-
     char *result = new char[internal->TIMESTAMP_DATA_SIZE_BYTES];
-    memset(result, 0, internal->TIMESTAMP_DATA_SIZE_BYTES);
+    TimeStamp *timestamps = reinterpret_cast<TimeStamp *>(result);
+    parseTimestamps(data, timestamps);
+    return timestamps;
+}
 
-    MetaData meta;
-    memcpy(&meta, metaData, internal->META_DATA_SIZE_BYTES);
-    memcpy(result,
-           timestampData + (meta.currentPos + 1) * sizeof(TimeStamp),
-           internal->TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp));
-    memcpy(result + internal->TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp),
-           timestampData,
-           (meta.currentPos + 1) * sizeof(TimeStamp));
-
-    reverse<TimeStamp>(result);
-    return reinterpret_cast<TimeStamp *>(result);
+QVector<TimeStamp> LowLevelBufferHandler::getTimestamps(const void *data) const
+{
+    QVector<TimeStamp> timestamps(bufferSize);
+    parseTimestamps(data, timestamps.data());
+    return timestamps;
 }
 
 QualityCode LowLevelBufferHandler::getQualityCode(BufferId bufferId, const void *data) const
@@ -208,6 +204,27 @@ void LowLevelBufferHandler::parseBuffer(BufferId bufferId, const void *from, con
            (meta.currentPos + 1) * sizeof(SignalValue));
 
     reverse<SignalValue>(result);
+}
+
+void LowLevelBufferHandler::parseTimestamps(const void *from, TimeStamp *to) const
+{
+    char *data = reinterpret_cast<char *>(const_cast<void *>(from));
+    char *metaData = data;
+    char *timestampData = data + internal->TIMESTAMPS_OFFSET;
+
+    char *result = reinterpret_cast<char *>(to);
+    memset(result, 0, internal->TIMESTAMP_DATA_SIZE_BYTES);
+
+    MetaData meta;
+    memcpy(&meta, metaData, internal->META_DATA_SIZE_BYTES);
+    memcpy(result,
+           timestampData + (meta.currentPos + 1) * sizeof(TimeStamp),
+           internal->TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp));
+    memcpy(result + internal->TIMESTAMP_DATA_SIZE_BYTES - (meta.currentPos + 1) * sizeof(TimeStamp),
+           timestampData,
+           (meta.currentPos + 1) * sizeof(TimeStamp));
+
+    reverse<TimeStamp>(result);
 }
 
 void LowLevelBufferHandler::checkBufferId(BufferId bufferId) const

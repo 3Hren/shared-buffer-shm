@@ -287,6 +287,39 @@ TEST(LowLevelBufferHandler, GetBuffer) {
     EXPECT_TRUE(0 == std::memcmp(expected3, actual3.get(), 4 * sizeof(SignalValue)));
 }
 
+TEST(LowLevelBufferHandler, GetBufferToVector) {
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    BufferPos currentPos = 0;
+    SignalValue buffersDump[] = {
+        4, 1, 2, 3,
+        8, 5, 6, 7,
+        0, 9, 0, 0,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3
+    };
+    QualityCode qualityCodesDump[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    TimeStamp timeStampsDump[] = {4, 1, 2, 3};
+
+    const int length = manager.getDataLengthBytes();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    currentPos,
+                                                    buffersDump,
+                                                    qualityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+    EXPECT_EQ(QVector<SignalValue>({4, 3, 2, 1}), manager.getBuffer<QVector>(0, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({8, 7, 6, 5}), manager.getBuffer<QVector>(1, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({0, 0, 0, 9}), manager.getBuffer<QVector>(2, (void*)storage.get()));
+}
+
 TEST(LowLevelBufferHandler, ParseTimestamps) {
     const BufferId BUFFERS_COUNT = 10;
     const BufferPos BUFFER_SIZE = 4;
@@ -316,8 +349,40 @@ TEST(LowLevelBufferHandler, ParseTimestamps) {
                                                     timeStampsDump,
                                                     length));
     TimeStamp expected[] = {9, 8, 7, 6};
-    std::unique_ptr<TimeStamp[]> actual(manager.getTimeStamps((void*)storage.get()));
+    std::unique_ptr<TimeStamp[]> actual(manager.getRawTimeStamps((void*)storage.get()));
     EXPECT_TRUE(0 == std::memcmp(expected, actual.get(), 4 * sizeof(TimeStamp)));
+}
+
+TEST(LowLevelBufferHandler, ParseTimestampsToVector) {
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    BufferPos currentPos = 0;
+    SignalValue buffersDump[] = {
+        4, 1, 2, 3,
+        8, 5, 6, 7,
+        0, 9, 0, 0,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3
+    };
+    QualityCode qualityCodesDump[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    TimeStamp timeStampsDump[] = {9, 6, 7, 8};
+
+    const int length = manager.getDataLengthBytes();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    currentPos,
+                                                    buffersDump,
+                                                    qualityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+    QVector<TimeStamp> expected = {9, 8, 7, 6};
+    EXPECT_EQ(expected, manager.getTimestamps((void*)storage.get()));
 }
 
 TEST(LowLevelBufferHandler, ParseQualityCode) {

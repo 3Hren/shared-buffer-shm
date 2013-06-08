@@ -7,10 +7,9 @@ class SharedBufferReader : public AbstractSharedBufferHandler
 {
 public:
     Buffer getBuffer(BufferId bufferId) const;
+    BuffersDump getBuffersDump() const;
+    QVector<TimeStamp> getTimestamps() const;
     //! --- BufferReader ---
-    //! @todo: BuffersDump getBuffersDump() const &&;
-    //! @todo: BuffersDump { vector<Buffer>; vector<TimeStamp>; }
-    //! @todo: vector<TimeStamp> getTimeStamps() const;
     //! @todo: QualityCode getValueCode(BufferId id) const;
 
 protected:

@@ -2,6 +2,7 @@
 
 #include "SharedBufferGlobal.h"
 #include "domain/MetaData.h"
+#include <QVector>
 
 class LowLevelBufferHandler
 {
@@ -22,6 +23,7 @@ public:
     virtual void *createStorage() const;
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
     virtual char *getBuffersDump(const void *data) const;
+
     virtual SignalValue *getRawBuffer(BufferId bufferId, const void *data) const;
 
     template<template<typename ...> class Container>
@@ -32,7 +34,13 @@ public:
         return std::move(values);
     }
 
-    virtual TimeStamp *getTimeStamps(const void *data) const;
+    virtual QVector<SignalValue> getBuffer(BufferId bufferId, const void *data) const {
+        return getBuffer<QVector>(bufferId, data);
+    }
+
+    virtual TimeStamp *getRawTimeStamps(const void *data) const;        
+    virtual QVector<TimeStamp> getTimestamps(const void *data) const;
+
     virtual QualityCode getQualityCode(BufferId bufferId, const void *data) const;
     virtual void setQualityCode(BufferId bufferId, QualityCode code, const void *data) const;
 
@@ -48,5 +56,6 @@ private:
     }
 
     void parseBuffer(BufferId bufferId, const void *from, const SignalValue *to) const;
+    void parseTimestamps(const void *from, TimeStamp *to) const;
     void checkBufferId(BufferId bufferId) const;
 };
