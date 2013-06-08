@@ -21,7 +21,7 @@ public:
     quint32 getDumpLengthBytes() const;
 
     virtual void *createStorage() const;
-    virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const;
+    virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, void *data) const;
     virtual char *getRawBuffersDump(const void *data) const;
     virtual SignalValue *getRawBuffer(BufferId bufferId, const void *data) const;
     virtual TimeStamp *getRawTimeStamps(const void *data) const;
@@ -44,7 +44,7 @@ public:
     virtual QVector<TimeStamp> getTimestamps(const void *data) const;
 
     virtual QualityCode getQualityCode(BufferId bufferId, const void *data) const;
-    virtual void setQualityCode(BufferId bufferId, QualityCode code, const void *data) const;
+    virtual void setQualityCode(BufferId bufferId, QualityCode code, void *data) const;
 
 private:
     template<typename T>
@@ -57,7 +57,7 @@ private:
         }
     }
 
-    void parseBuffer(BufferId bufferId, const void *from, const SignalValue *to) const;
+    void parseBuffer(BufferId bufferId, const void *from, SignalValue *to) const;
     void parseTimestamps(const void *from, TimeStamp *to) const;
     void checkBufferId(BufferId bufferId) const;
 };

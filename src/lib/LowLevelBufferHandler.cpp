@@ -73,12 +73,12 @@ void *LowLevelBufferHandler::createStorage() const
     MetaData meta;
     meta.currentPos = bufferSize - 1;
     memcpy(storage, &meta, sizeof(MetaData));
-    return (void*)storage;
+    return reinterpret_cast<void *>(storage);
 }
 
-void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signalsPack, const void *data) const
+void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signalsPack, void *data) const
 {
-    char *metaData = (char*)data;
+    char *metaData = reinterpret_cast<char *>(data);
     char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
     char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
     char *timestampData = qualityData + internal->QUALITY_DATA_SIZE_BYTES;
@@ -99,10 +99,10 @@ void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signals
 
 char *LowLevelBufferHandler::getRawBuffersDump(const void *data) const
 {        
-    char *metaData = (char*)data;
-    char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
-    char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
-    char *timestampData = qualityData + internal->QUALITY_DATA_SIZE_BYTES;
+    const char *metaData = reinterpret_cast<const char *>(data);
+    const char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
+    const char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
+    const char *timestampData = qualityData + internal->QUALITY_DATA_SIZE_BYTES;
 
     int length = getDumpLengthBytes();
     char *result = new char[length];
@@ -169,30 +169,30 @@ QVector<TimeStamp> LowLevelBufferHandler::getTimestamps(const void *data) const
 QualityCode LowLevelBufferHandler::getQualityCode(BufferId bufferId, const void *data) const
 {
     checkBufferId(bufferId);
-    char *metaData = (char*)data;
-    char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
-    char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
+    const char *metaData = reinterpret_cast<const char *>(data);
+    const char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
+    const char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
     QualityCode result;
     memcpy(&result, qualityData + sizeof(QualityCode) * bufferId, sizeof(QualityCode));
     return result;
 }
 
-void LowLevelBufferHandler::setQualityCode(BufferId bufferId, QualityCode code, const void *data) const
+void LowLevelBufferHandler::setQualityCode(BufferId bufferId, QualityCode code, void *data) const
 {
     checkBufferId(bufferId);
-    char *metaData = (char*)data;
+    char *metaData = reinterpret_cast<char *>(data);
     char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
     char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;
     memcpy(qualityData + sizeof(QualityCode) * bufferId, &code, sizeof(QualityCode));
 }
 
-void LowLevelBufferHandler::parseBuffer(BufferId bufferId, const void *from, const SignalValue *to) const
+void LowLevelBufferHandler::parseBuffer(BufferId bufferId, const void *from, SignalValue *to) const
 {
-    char *metaData = (char*)from;
-    char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
+    const char *metaData = reinterpret_cast<const char *>(from);
+    const char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
 
     int length = internal->BUFFER_DATA_SIZE_BYTES;
-    char *result = (char*)to;
+    char *result = reinterpret_cast<char *>(to);
     char *resultBuffersData = result;
     memset(result, 0, length);
 

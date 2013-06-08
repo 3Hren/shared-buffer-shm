@@ -6,7 +6,7 @@ class LowLevelBufferHandlerMock : public LowLevelBufferHandler {
 public:
     LowLevelBufferHandlerMock() : LowLevelBufferHandler(2, 4) {}
     MOCK_CONST_METHOD0(createStorage, void*());
-    MOCK_CONST_METHOD3(push, void(TimeStamp, const SignalValue*, const void*));
+    MOCK_CONST_METHOD3(push, void(TimeStamp, const SignalValue*, void*));
     MOCK_CONST_METHOD1(getRawBuffersDump, char*(const void*));
     MOCK_CONST_METHOD2(getRawBuffer, SignalValue*(BufferId, const void*));
     MOCK_CONST_METHOD2(getBuffer, QVector<SignalValue>(BufferId, const void*));

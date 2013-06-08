@@ -47,6 +47,9 @@ TEST_F(SharedBufferWriterTest, CallsLowLevelBufferHandlerPushMethodWhenPushInvok
             .Times(1);
     EXPECT_CALL(sharedMemory, lock())
             .Times(1);
+    EXPECT_CALL(sharedMemory, data())
+            .Times(1)
+            .WillOnce(Return(nullptr));
     EXPECT_CALL(sharedMemory, unlock())
             .Times(1);
 
