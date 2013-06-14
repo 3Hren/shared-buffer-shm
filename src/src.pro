@@ -3,5 +3,6 @@ CONFIG += ordered
 
 SUBDIRS += \    
     lib \
-    app \
-    tests
+    #app \
+    tests #\
+    #framework-python

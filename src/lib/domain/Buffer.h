@@ -3,23 +3,28 @@
 #include <QVector>
 #include "SharedBufferGlobal.h"
 
-struct Buffer {
-    QVector<SignalValue> values;
+template<template<typename...> class Vector>
+struct TypedBuffer {
+    Vector<SignalValue> values;
     QualityCode quality;
 
-    inline bool operator ==(const Buffer &other) const {
+    inline bool operator ==(const TypedBuffer<Vector> &other) const {
         return values == other.values && quality == other.quality;
     }
 };
 
-struct BuffersDump {
-    QVector<TimeStamp> timestamps;
-    QVector<Buffer> buffers;
+template<template<typename...> class Vector>
+struct TypedBuffersDump {
+    Vector<TimeStamp> timestamps;
+    Vector<TypedBuffer<Vector>> buffers;
 
-    inline bool operator ==(const BuffersDump &other) const {
+    inline bool operator ==(const TypedBuffersDump &other) const {
         return timestamps == other.timestamps && buffers == other.buffers;
     }
 };
+
+typedef TypedBuffer<QVector> Buffer;
+typedef TypedBuffersDump<QVector> BuffersDump;
 
 #ifdef DEBUG
 #include <QDebug>

@@ -4,10 +4,10 @@
 
 #include <vector>
 
-template<template<typename ...> class Container>
+template<template<typename ...> class Vector>
 struct SignalPackType {
     TimeStamp timeStamp;
-    Container<SignalValue> signalValues;
+    Vector<SignalValue> signalValues;
 };
 
 struct SignalPack : SignalPackType<std::vector> {

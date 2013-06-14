@@ -20,7 +20,8 @@ HEADERS += \
     ThreadSafeQueue.h \
     domain/SignalPack.h \
     domain/Buffer.h \
-    domain/MetaData.h
+    domain/MetaData.h \
+    domain/Internal.h
 
 SOURCES += \
     SharedBufferWriter.cpp \

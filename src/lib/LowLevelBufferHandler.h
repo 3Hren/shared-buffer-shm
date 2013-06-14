@@ -2,7 +2,7 @@
 
 #include "SharedBufferGlobal.h"
 #include "domain/MetaData.h"
-#include <QVector>
+#include <QVector>//! @todo: Не нравится мне тут зависимость от Qt
 
 class LowLevelBufferHandler
 {
@@ -49,12 +49,9 @@ public:
 private:
     template<typename T>
     void reverse(char *data) const {
-        T *tempArray = (T*)data;
-        for (BufferPos i = 0; i < bufferSize / 2; ++i) {
-            T tmp = tempArray[i];
-            tempArray[i] = tempArray[bufferSize - 1 - i];
-            tempArray[bufferSize - 1 - i] = tmp;
-        }
+        T *tempArray = reinterpret_cast<T*>(data);
+        for (BufferPos i = 0; i < bufferSize / 2; ++i)
+            std::swap(tempArray[i], tempArray[bufferSize - 1 - i]);
     }
 
     void parseBuffer(BufferId bufferId, const void *from, SignalValue *to) const;
