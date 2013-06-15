@@ -1,3 +1,9 @@
+sharbuf (0.3.0-1) unstable; urgency=low
+
+  * Introducing python binding
+
+ -- Evgeny Safronov <division494@gmail.com>  Sat, 16 Jun 2013 02:19:30 +0400
+
 sharbuf (0.2.3-1) unstable; urgency=low
 
   * Initial release (Closes: #1)

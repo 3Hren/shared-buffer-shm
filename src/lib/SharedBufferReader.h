@@ -3,8 +3,6 @@
 #include "AbstractSharedBufferHandler.h"
 #include "domain/Buffer.h"
 
-#include "LowLevelBufferHandler.h"
-
 class SharedBufferReader : public AbstractSharedBufferHandler
 {    
 public:

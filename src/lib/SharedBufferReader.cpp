@@ -1,11 +1,12 @@
 #include "SharedBufferReader.h"
 
-#include "LowLevelBufferHandler.h"
-
 #include <memory>
 #include <cstring>
 
 #include <QDebug>
+
+#include "LowLevelBufferHandler.h"
+#include "SharedMemoryLocker.h"
 
 template<template<typename...> class Vector>
 TypedBuffer<Vector> SharedBufferReader::getBuffer(BufferId bufferId) const
@@ -16,11 +17,11 @@ TypedBuffer<Vector> SharedBufferReader::getBuffer(BufferId bufferId) const
 template<template<typename...> class Vector>
 TypedBuffer<Vector> SharedBufferReader::getBuffer(BufferId bufferId, BufferId size) const
 {
-    sharedMemory->lock();
+    SharedMemoryLocker<SharedMemory> locker(sharedMemory);
     const void *data = sharedMemory->constData();
     Vector<SignalValue> values = lowLevelBufferHandler->getBuffer<Vector>(bufferId, size, data);
     QualityCode quality = lowLevelBufferHandler->getQualityCode(bufferId, data);
-    sharedMemory->unlock();
+    locker.unlock();
     const TypedBuffer<Vector> buffer{values, quality};
     return buffer;
 }

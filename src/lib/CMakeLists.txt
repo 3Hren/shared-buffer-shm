@@ -14,6 +14,7 @@ SET(HEADERS
     SharedBufferServer.h
     SharedBufferWriter.h
     SharedMemory.h
+    SharedMemoryLocker.h
     ThreadSafeQueue.h
     domain/Buffer.h
     domain/Internal.h
@@ -65,7 +66,10 @@ TARGET_LINK_LIBRARIES(${PROJECT}
     log4cxx
 )
 
-SET_TARGET_PROPERTIES(${PROJECT} PROPERTIES ENABLE_EXPORTS true)
+SET_TARGET_PROPERTIES(${PROJECT} PROPERTIES
+    SOVERSION ${SHARBUF_VERSION}
+    ENABLE_EXPORTS true
+)
 
 INSTALL(
     TARGETS
