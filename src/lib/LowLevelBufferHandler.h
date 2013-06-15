@@ -2,7 +2,7 @@
 
 #include "SharedBufferGlobal.h"
 #include "domain/MetaData.h"
-//#include <QVector>//! @todo: Не нравится мне тут зависимость от Qt
+#include <QVector>
 
 class LowLevelBufferHandler
 {

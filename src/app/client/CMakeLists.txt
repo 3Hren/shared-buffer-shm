@@ -1,25 +1,33 @@
 cmake_minimum_required(VERSION 2.8)
-SET(PROJECT sharbuf-server)
+SET(PROJECT sharbuf-client)
 
 SET(UTILS_PATH ../../utils)
 SET(HEADERS
-    SharedBufferOptionParser.h
+    _Pusher.h
+    _Dumper.h
+    _SharedBufferStorageClient.h
     ${UTILS_PATH}/OptionPrinter.h
     ${UTILS_PATH}/CustomOptionDescription.h
 )
 
-SET(MOC)
+SET(MOC
+    _Pusher.h
+    _Dumper.h
+    _SharedBufferStorageClient.h
+)
 
 SET(SOURCES
     main.cpp
-    SharedBufferOptionParser.cpp
+    _Pusher.cpp
+    _Dumper.cpp
+    _SharedBufferStorageClient.cpp
     ${UTILS_PATH}/OptionPrinter.cpp
     ${UTILS_PATH}/CustomOptionDescription.cpp
 )
 
 SET(BOOST_COMPONENTS
     system
-    filesystem
+    timer
     regex
     program_options
 )
