@@ -52,6 +52,39 @@ qt4_wrap_cpp(MOC_SOURCES ${MOC})
 find_package(Threads)
 find_package(Boost COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
 include_directories(. ${PROJECT_BINARY_DIR})
-add_library(${PROJECT} SHARED ${HEADERS} ${SOURCES} ${MOC_SOURCES})
-target_link_libraries(${PROJECT} ${CMAKE_THREAD_LIBS_INIT} ${QT_LIBRARIES} ${Boost_LIBRARIES} log4cxx)
+ADD_LIBRARY(${PROJECT} SHARED
+    ${HEADERS}
+    ${SOURCES}
+    ${MOC_SOURCES}
+)
+
+TARGET_LINK_LIBRARIES(${PROJECT}
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${QT_LIBRARIES}
+    ${Boost_LIBRARIES}
+    log4cxx
+)
+
 SET_TARGET_PROPERTIES(${PROJECT} PROPERTIES ENABLE_EXPORTS true)
+
+INSTALL(
+    TARGETS
+        sharbuf
+    RUNTIME DESTINATION bin COMPONENT runtime
+    LIBRARY DESTINATION lib COMPONENT runtime
+    ARCHIVE DESTINATION lib COMPONENT developement)
+
+INSTALL(
+    FILES
+        domain/Buffer.h
+        domain/SignalPack.h
+    DESTINATION include/sharbuf/domain
+    COMPONENT development
+)
+
+INSTALL(
+    FILES
+        LowLevelBufferHandler.h
+    DESTINATION include/sharbuf
+    COMPONENT development
+)

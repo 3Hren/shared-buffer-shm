@@ -54,7 +54,7 @@ void CustomOptionDescription::checkIfPositional(const boost::program_options::po
 std::string CustomOptionDescription::getOptionUsageString()
 {
     std::stringstream usageString;
-    if ( isPositional ) {
+    if (isPositional) {
         usageString << "\t" << std::setw(ADEQUATE_WIDTH_FOR_OPTION_NAME) << std::left << optionDisplayName << "\t" << optionDescription;
     } else {
         usageString << "\t" << std::setw(ADEQUATE_WIDTH_FOR_OPTION_NAME) << std::left << optionFormatName << "\t" << optionDescription;
