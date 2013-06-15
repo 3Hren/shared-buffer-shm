@@ -37,8 +37,6 @@ SET(SOURCES
 )
 
 SET(BOOST_COMPONENTS
-    thread
-    system
 )
 
 SET(Boost_USE_MULTITHREADED ON)
