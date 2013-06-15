@@ -1,5 +1,7 @@
 QMAKE_CXXFLAGS += -std=c++11
 
+QT -= gui
+
 LIBS += \
     -llog4cxx \
     -lboost_timer \

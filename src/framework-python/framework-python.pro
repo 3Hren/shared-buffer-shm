@@ -23,27 +23,18 @@ INCLUDEPATH += \
 
 HEADERS += \
     $${LIB_PATH}/SharedBufferGlobal.h \
-#    SharedBufferWriter.h \
     $${LIB_PATH}/SharedBufferException.h \
-#    BufferWriter.h \
     $${LIB_PATH}/LowLevelBufferHandler.h \
     $${LIB_PATH}/SharedBufferReader.h \
-#    SharedBufferServer.h \
     $${LIB_PATH}/AbstractSharedBufferHandler.h \
     $${LIB_PATH}/SharedMemory.h \
     $${LIB_PATH}/QtBasedSharedMemory.h \
-#    BeanFactory.h \
-#    ThreadSafeQueue.h \
-#    domain/SignalPack.h \
     $${LIB_PATH}/domain/Buffer.h \
     $${LIB_PATH}/domain/MetaData.h
 
 SOURCES += \
-#    SharedBufferWriter.cpp \
-#    BufferWriter.cpp \
     $${LIB_PATH}/LowLevelBufferHandler.cpp \
     $${LIB_PATH}/SharedBufferReader.cpp \
-#    SharedBufferServer.cpp \
     $${LIB_PATH}/AbstractSharedBufferHandler.cpp \
     $${LIB_PATH}/QtBasedSharedMemory.cpp \
     Wrap.cpp

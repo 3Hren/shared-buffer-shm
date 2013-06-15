@@ -25,9 +25,7 @@ public:
     TypedBuffer<std::vector> getBuffer(BufferId bufferId) const {
         qDebug() << bufferId;
         return reader.getBuffer<std::vector>(bufferId);
-    }
-
-
+    }   
 };
 
 using namespace boost::python;

@@ -2,10 +2,12 @@
 *.o
 Makefile
 /bin/
+/build/
 /lib/
 
 #[Project Specific]
 *.pro.user*
+*.txt.user*
 
 #[Qt]
 moc_*
