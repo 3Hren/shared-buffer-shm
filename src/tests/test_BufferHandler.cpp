@@ -320,6 +320,50 @@ TEST(LowLevelBufferHandler, GetBufferToVector) {
     EXPECT_EQ(QVector<SignalValue>({0, 0, 0, 9}), manager.getBuffer<QVector>(2, (void*)storage.get()));
 }
 
+TEST(LowLevelBufferHandler, GetBufferSlice) {
+    const BufferId BUFFERS_COUNT = 10;
+    const BufferPos BUFFER_SIZE = 4;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    BufferPos currentPos = 0;
+    SignalValue buffersDump[] = {
+        4, 1, 2, 3,
+        8, 5, 6, 7,
+        0, 9, 0, 0,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3,
+        4, 1, 2, 3
+    };
+    QualityCode qualityCodesDump[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    TimeStamp timeStampsDump[] = {4, 1, 2, 3};
+
+    const int length = manager.getDataLengthBytes();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    currentPos,
+                                                    buffersDump,
+                                                    qualityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+    EXPECT_EQ(QVector<SignalValue>({4}), manager.getBuffer<QVector>(0, 1, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({4, 3}), manager.getBuffer<QVector>(0, 2, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({4, 3, 2}), manager.getBuffer<QVector>(0, 3, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({4, 3, 2, 1}), manager.getBuffer<QVector>(0, 4, (void*)storage.get()));
+
+    EXPECT_EQ(QVector<SignalValue>({8}), manager.getBuffer<QVector>(1, 1, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({8, 7}), manager.getBuffer<QVector>(1, 2, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({8, 7, 6}), manager.getBuffer<QVector>(1, 3, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({8, 7, 6, 5}), manager.getBuffer<QVector>(1, 4, (void*)storage.get()));
+
+    EXPECT_EQ(QVector<SignalValue>({0}), manager.getBuffer<QVector>(2, 1, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({0, 0}), manager.getBuffer<QVector>(2, 2, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({0, 0, 0}), manager.getBuffer<QVector>(2, 3, (void*)storage.get()));
+    EXPECT_EQ(QVector<SignalValue>({0, 0, 0, 9}), manager.getBuffer<QVector>(2, 4, (void*)storage.get()));
+}
+
 TEST(LowLevelBufferHandler, ParseTimestamps) {
     const BufferId BUFFERS_COUNT = 10;
     const BufferPos BUFFER_SIZE = 4;
@@ -479,6 +523,13 @@ TEST(LowLevelBufferHandler, GetBufferThrowsExceptionWhenInvalidArgumentsIsSent) 
     LowLevelBufferHandler manager(80, 256);
     EXPECT_THROW(manager.getRawBuffer(-1, 0), std::invalid_argument);
     EXPECT_THROW(manager.getRawBuffer(80, 0), std::invalid_argument);
+}
+
+TEST(LowLevelBufferHandler, GetBufferThrowsExceptionWhenInvalidSliceRequested) {
+    LowLevelBufferHandler manager(80, 256);
+    EXPECT_THROW(manager.getBuffer<QVector>(0, -1, 0), std::invalid_argument);
+    EXPECT_THROW(manager.getBuffer<QVector>(0, 0, 0), std::invalid_argument);
+    EXPECT_THROW(manager.getBuffer<QVector>(0, 257, 0), std::invalid_argument);
 }
 
 TEST(LowLevelBufferHandler, GetQualityThrowsExceptionWhenInvalidArgumentsIsSent) {

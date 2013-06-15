@@ -161,24 +161,34 @@ void LowLevelBufferHandler::setQualityCode(BufferId bufferId, QualityCode code, 
 
 void LowLevelBufferHandler::parseBuffer(BufferId bufferId, const void *from, SignalValue *to) const
 {
+    parseBuffer(bufferId, bufferSize, from, to);
+}
+
+void LowLevelBufferHandler::parseBuffer(BufferId bufferId, BufferId count, const void *from, SignalValue *to) const
+{
     const char *metaData = reinterpret_cast<const char *>(from);
     const char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
 
-    int length = internal->BUFFER_DATA_SIZE_BYTES;
     char *result = reinterpret_cast<char *>(to);
     char *resultBuffersData = result;
-    memset(result, 0, length);
+    memset(result, 0, count);
 
     MetaData meta;
     memcpy(&meta, metaData, internal->META_DATA_SIZE_BYTES);
-    memcpy(resultBuffersData,
-           buffersData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1) * sizeof(SignalValue),
-           bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue));
-    memcpy(resultBuffersData + bufferSize * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
-           buffersData + bufferId * bufferSize * sizeof(SignalValue),
-           (meta.currentPos + 1) * sizeof(SignalValue));
 
-    reverse<SignalValue>(result);
+    if (count <= meta.currentPos + 1) {
+        memcpy(resultBuffersData,
+               buffersData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1 - count) * sizeof(SignalValue),
+               count * sizeof(SignalValue));
+    } else {
+        memcpy(resultBuffersData,
+               buffersData + bufferId * bufferSize * sizeof(SignalValue) + (meta.currentPos + 1 + (bufferSize - count)) * sizeof(SignalValue),
+               (count - (meta.currentPos + 1)) * sizeof(SignalValue));
+        memcpy(resultBuffersData + count * sizeof(SignalValue) - (meta.currentPos + 1) * sizeof(SignalValue),
+               buffersData + bufferId * bufferSize * sizeof(SignalValue),
+               (meta.currentPos + 1) * sizeof(SignalValue));
+    }
+    reverse<SignalValue>(result, count);
 }
 
 void LowLevelBufferHandler::parseTimestamps(const void *from, TimeStamp *to) const
@@ -206,4 +216,10 @@ void LowLevelBufferHandler::checkBufferId(BufferId bufferId) const
 {
     if (bufferId >= buffersCount)
         throw IllegalValueException(QString("Buffer id (%1) should be in range [0, %2]").arg(bufferId).arg(buffersCount - 1).toStdString());
+}
+
+void LowLevelBufferHandler::checkSizeRequested(BufferId size) const
+{
+    if (size == 0 || size > bufferSize)
+        throw IllegalValueException(QString("Buffer size (%1) should be in range [1, %2]").arg(size).arg(bufferSize).toStdString());
 }
