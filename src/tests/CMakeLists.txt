@@ -35,3 +35,9 @@ include_directories(../lib)
 add_executable(${PROJECT} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT} ${CMAKE_THREAD_LIBS_INIT} ${QT_LIBRARIES} ${Boost_LIBRARIES} ${GOOGLE_LIBRARIES} sharbuf)
 SET_TARGET_PROPERTIES(${PROJECT} PROPERTIES ENABLE_EXPORTS true)
+
+INSTALL(
+    TARGETS
+        sharbuf-tests
+    RUNTIME DESTINATION bin COMPONENT development
+)

@@ -40,3 +40,9 @@ include_directories(${PROJECT_BINARY_DIR} ../../lib ../../utils)
 add_executable(${PROJECT} ${HEADERS} ${SOURCES} ${MOC_SOURCES})
 target_link_libraries(${PROJECT} ${CMAKE_THREAD_LIBS_INIT} ${QT_LIBRARIES} ${Boost_LIBRARIES} log4cxx sharbuf)
 SET_TARGET_PROPERTIES(${PROJECT} PROPERTIES ENABLE_EXPORTS true)
+
+INSTALL(
+    TARGETS
+        sharbuf-server
+    RUNTIME DESTINATION bin COMPONENT runtime
+)

@@ -19,3 +19,15 @@ Section: libdevel
 Depends: ${shlibs:Depends}, ${misc:Depends}, libsharbuf (=${binary:Version})
 Description: Shared Buffer - Development Headers
  Shared Buffer development headers
+
+Package: sharbuf-tools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsharbuf (=${binary:Version})
+Description: Shared Buffer - Applications
+ Contains server and clients for perfomance testing
+
+Package: sharbuf-framework-python
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsharbuf (=${binary:Version})
+Description: Shared Buffer - Python Framework
+ Python binding for sharbuf library
