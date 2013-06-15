@@ -13,6 +13,8 @@ debian/*
 !/debian/copyright
 !/debian/libsharbuf.install
 !/debian/libsharbuf-dev.install
+!/debian/sharbuf-tools.install
+!/debian/sharbuf-framework-python.install
 !/debian/rules
 /obj-i686-linux-gnu/
 

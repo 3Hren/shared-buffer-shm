@@ -2,13 +2,14 @@
 
 #include <iostream>
 
-#include "SharedBufferOptionParser.h"
-#include "SharedBufferServer.h"
-
 #include <log4cxx/propertyconfigurator.h>
 
 #include <QCoreApplication>
 #include <QSettings>
+
+#include "SharedBufferOptionParser.h"
+#include "SharedBufferServer.h"
+#include "config.hpp"
 
 void setSignalHandler() {
     struct sigaction sa;
@@ -24,13 +25,13 @@ void setSignalHandler() {
 
 int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);
-    app.setApplicationName("SharedBufferServer");
-    app.setApplicationVersion("0.1.1");
-    app.setOrganizationName("Diaprom");
+    app.setApplicationName("sharbuf-server");
+    app.setApplicationVersion(QString("%1.%2.%3").arg(SHARBUF_VERSION_MAJOR).arg(SHARBUF_VERSION_MINOR).arg(SHARBUF_VERSION_PATCH));
+    app.setOrganizationName("diaprom");
     app.setOrganizationDomain("www.diaprom.ru");
 
     QSettings settings;
-    const QString &logConfigFileName = settings.value("logConfigFileName", qApp->applicationDirPath() + "/log.properties").toString();
+    const QString &logConfigFileName = settings.value("logConfigFileName", "/usr/share/sharbuf/log.properties").toString();
 
     log4cxx::PropertyConfigurator::configure(logConfigFileName.toStdString());
     LOG4CXX_INFO(log4cxx::Logger::getRootLogger(),

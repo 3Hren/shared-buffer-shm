@@ -46,3 +46,10 @@ INSTALL(
         sharbuf-server
     RUNTIME DESTINATION bin COMPONENT runtime
 )
+
+INSTALL(
+    FILES
+        ../../../other/log.properties
+    DESTINATION share/sharbuf
+    COMPONENT runtime
+)
