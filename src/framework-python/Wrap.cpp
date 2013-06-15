@@ -23,9 +23,12 @@ public:
     }
 
     TypedBuffer<std::vector> getBuffer(BufferId bufferId) const {
-        qDebug() << bufferId;
         return reader.getBuffer<std::vector>(bufferId);
     }   
+
+    TypedBuffer<std::vector> getBufferSlice(BufferId bufferId, BufferId size) const {
+        return reader.getBuffer<std::vector>(bufferId, size);
+    }
 };
 
 using namespace boost::python;
@@ -39,5 +42,6 @@ BOOST_PYTHON_MODULE(libpysharbuf) {
             .add_property("quality", make_getter(&TypedBuffer<std::vector>::quality), make_setter(&TypedBuffer<std::vector>::quality));
 
     class_<BufferReader>("BufferReader", init<BufferId, BufferPos>(args("buffersCount", "bufferSize")))
-            .def("getBuffer", &BufferReader::getBuffer, args("bufferId"));
+            .def("getBuffer", &BufferReader::getBuffer, args("bufferId"))
+            .def("getBufferSlice", &BufferReader::getBufferSlice, args("bufferId", "size"));
 }

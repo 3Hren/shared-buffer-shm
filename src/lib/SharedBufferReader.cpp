@@ -7,14 +7,21 @@
 
 #include <QDebug>
 
-Buffer SharedBufferReader::getBuffer(BufferId bufferId) const
+template<template<typename...> class Vector>
+TypedBuffer<Vector> SharedBufferReader::getBuffer(BufferId bufferId) const
+{
+    return getBuffer<Vector>(bufferId, lowLevelBufferHandler->getBufferSize());
+}
+
+template<template<typename...> class Vector>
+TypedBuffer<Vector> SharedBufferReader::getBuffer(BufferId bufferId, BufferId size) const
 {
     sharedMemory->lock();
     const void *data = sharedMemory->constData();
-    QVector<SignalValue> values = lowLevelBufferHandler->getBuffer(bufferId, data);
+    Vector<SignalValue> values = lowLevelBufferHandler->getBuffer<Vector>(bufferId, size, data);
     QualityCode quality = lowLevelBufferHandler->getQualityCode(bufferId, data);
     sharedMemory->unlock();
-    const Buffer buffer{values, quality};
+    const TypedBuffer<Vector> buffer{values, quality};
     return buffer;
 }
 
@@ -60,3 +67,9 @@ SharedMemory::AccessMode SharedBufferReader::getAcessMode() const
 {
     return SharedMemory::AccessMode::ReadOnly;
 }
+
+template TypedBuffer<QVector> SharedBufferReader::getBuffer<QVector>(BufferId bufferId) const;
+template TypedBuffer<QVector> SharedBufferReader::getBuffer<QVector>(BufferId bufferId, BufferId size) const;
+
+template TypedBuffer<std::vector> SharedBufferReader::getBuffer<std::vector>(BufferId bufferId) const;
+template TypedBuffer<std::vector> SharedBufferReader::getBuffer<std::vector>(BufferId bufferId, BufferId size) const;

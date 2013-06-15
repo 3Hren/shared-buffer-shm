@@ -54,6 +54,6 @@ void _Dumper::readBuffer()
     counter++;
 
     boost::timer::cpu_timer timer;
-    const Buffer &buffer = reader->getBuffer(0);
+    const Buffer &buffer = reader->getBuffer<QVector>(0);
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Buffer with size " << buffer.values.size() << " read in " << timer.elapsed().wall / 1.0e6 << " ms");
 }

@@ -9,17 +9,11 @@ class SharedBufferReader : public AbstractSharedBufferHandler
 {    
 public:
     template<template<typename...> class Vector>
-    TypedBuffer<Vector> getBuffer(BufferId bufferId) const {
-        sharedMemory->lock();
-        const void *data = sharedMemory->constData();
-        Vector<SignalValue> values = lowLevelBufferHandler->getBuffer<Vector>(bufferId, data);
-        QualityCode quality = lowLevelBufferHandler->getQualityCode(bufferId, data);
-        sharedMemory->unlock();
-        const TypedBuffer<Vector> buffer{values, quality};
-        return buffer;
-    }
+    TypedBuffer<Vector> getBuffer(BufferId bufferId) const;
 
-    Buffer getBuffer(BufferId bufferId) const;
+    template<template<typename...> class Vector>
+    TypedBuffer<Vector> getBuffer(BufferId bufferId, BufferId size) const;
+
     BuffersDump getBuffersDump() const;
     QVector<TimeStamp> getTimestamps() const;
     QualityCode getQualityCode(BufferId bufferId) const;    
