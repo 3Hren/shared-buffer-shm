@@ -1,14 +1,25 @@
-#[Common]
+# [Common]
 *.o
 Makefile
 /bin/
 /build/
 /lib/
 
-#[Project Specific]
+# [Build]
+debian/*
+!/debian/changelog
+!/debian/compat
+!/debian/control
+!/debian/copyright
+!/debian/libsharbuf.install
+!/debian/libsharbuf-dev.install
+!/debian/rules
+/obj-i686-linux-gnu/
+
+# [Project Specific]
 *.pro.user*
 *.txt.user*
 
-#[Qt]
+# [Qt]
 moc_*
 

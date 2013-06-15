@@ -1,0 +1,21 @@
+Source: sharbuf
+Section: utils
+Priority: extra
+Maintainer: Evgeny Safronov <division494@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), cmake
+Standards-Version: 3.9.4
+Vcs-Git: git@bitbucket.org:diaprom/bufferstorage-sharedmemory.git
+Vcs-Browser: https://bitbucket.org/diaprom/bufferstorage-sharedmemory
+
+Package: libsharbuf
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Based on shared memory buffer storage library
+ Framework to acess and manipulate shared buffer storage.
+
+Package: libsharbuf-dev
+Architecture: any
+Section: libdevel
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsharbuf (=${binary:Version})
+Description: Shared Buffer - Development Headers
+ Shared Buffer development headers
