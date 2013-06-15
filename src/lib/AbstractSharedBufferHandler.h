@@ -21,6 +21,7 @@ public:
 
     SharedMemory *getSharedMemory() const;
 
+    bool isAttached() const;
     void attach(const QString &key);
 
 protected:

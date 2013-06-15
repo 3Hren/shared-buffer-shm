@@ -34,6 +34,11 @@ SharedMemory *AbstractSharedBufferHandler::getSharedMemory() const
     return sharedMemory;
 }
 
+bool AbstractSharedBufferHandler::isAttached() const
+{
+    return sharedMemory->isAttached();
+}
+
 void AbstractSharedBufferHandler::attach(const QString &key)
 {
     if (sharedMemory->isAttached())

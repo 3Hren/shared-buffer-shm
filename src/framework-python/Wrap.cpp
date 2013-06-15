@@ -19,7 +19,15 @@ public:
     {
         reader.setSharedMemory(&memory);
         reader.setLowLevelBufferHandler(&handler);
-        reader.attach("diaprom");
+
+    }
+
+    bool isAttached() const {
+        return reader.isAttached();
+    }
+
+    void attach(const std::string &key) {
+        reader.attach(key.c_str());
     }
 
     TypedBuffer<std::vector> getBuffer(BufferId bufferId) const {
@@ -42,6 +50,8 @@ BOOST_PYTHON_MODULE(libpysharbuf) {
             .add_property("quality", make_getter(&TypedBuffer<std::vector>::quality), make_setter(&TypedBuffer<std::vector>::quality));
 
     class_<BufferReader>("BufferReader", init<BufferId, BufferPos>(args("buffersCount", "bufferSize")))
+            .def("attach", &BufferReader::attach, args("key"))
+            .def("isAttached", &BufferReader::isAttached)
             .def("getBuffer", &BufferReader::getBuffer, args("bufferId"))
             .def("getBufferSlice", &BufferReader::getBufferSlice, args("bufferId", "size"));
 }
