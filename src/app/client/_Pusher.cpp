@@ -1,22 +1,21 @@
 #include "_Pusher.h"
 
-#include "LowLevelBufferHandler.h"
-
-#include "QtBasedSharedMemory.h"
-
-#include <log4cxx/logger.h>
-
 #include <boost/timer/timer.hpp>
 #include <boost/scoped_array.hpp>
 
 #include <QTimer>
 #include <QDateTime>
 
+#include "LowLevelBufferHandler.h"
+#include "QtBasedSharedMemory.h"
+#include "exceptions/SharedBufferException.h"
+
 _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     QObject(parent),
     buffersCount(buffersCount),
     bufferSize(bufferSize),
-    timeout(timeout)
+    timeout(timeout),
+    log(log4cxx::Logger::getLogger("ru.diaprom.sharbuf.Pusher"))
 {
     lowLevelBufferHandler = new LowLevelBufferHandler(buffersCount, bufferSize);
     sharedMemory = new QtBasedSharedMemory;
@@ -24,7 +23,14 @@ _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSiz
     sharedBufferWriter = new SharedBufferWriter;
     sharedBufferWriter->setSharedMemory(sharedMemory);
     sharedBufferWriter->setLowLevelBufferHandler(lowLevelBufferHandler);
-    sharedBufferWriter->attach(name);
+
+    try {
+        sharedBufferWriter->attach(name);
+        LOG4CXX_INFO(log, "Shared memory segment has been successfully attached");
+    } catch (AttachException &e) {
+        LOG4CXX_FATAL(log, "Shared memory segment attaching failed: " << sharedMemory->getErrorDescription().toStdString());
+        exit(1);
+    }
 
     writer = new BufferWriter(sharedBufferWriter);
     writer->start();
@@ -50,7 +56,7 @@ void _Pusher::push()
 
     boost::timer::cpu_timer timer;
     writer->push(QDateTime::currentDateTime().toMSecsSinceEpoch(), data.get());
-    LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Pushed to queue " << buffersCount << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
+    LOG4CXX_DEBUG(log, "#" << counter << ". Pushed to queue " << buffersCount << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
 
     QTimer::singleShot(timeout, this, SLOT(push()));
 }

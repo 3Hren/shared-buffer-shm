@@ -1,3 +1,9 @@
+sharbuf (0.3.3-1) unstable; urgency=low
+
+  * Исправления
+
+ -- Evgeny Safronov <division494@gmail.com>  Sun, 16 Jun 2013 13:59:20 +0400
+
 sharbuf (0.3.2-1) unstable; urgency=low
 
   * Настройки логгера добавлены в пакет

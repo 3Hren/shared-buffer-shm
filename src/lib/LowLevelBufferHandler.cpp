@@ -1,7 +1,7 @@
 #include "LowLevelBufferHandler.h"
 
-#include "SharedBufferException.h"
 #include "domain/Internal.h"
+#include "exceptions/SharedBufferException.h"
 
 #include <QDebug>
 

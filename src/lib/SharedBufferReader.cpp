@@ -3,8 +3,6 @@
 #include <memory>
 #include <cstring>
 
-#include <QDebug>
-
 #include "LowLevelBufferHandler.h"
 #include "SharedMemoryLocker.h"
 

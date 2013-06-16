@@ -6,7 +6,7 @@
 
 using namespace ::testing;
 
-#include "SharedBufferException.h"
+#include "exceptions/SharedBufferException.h"
 
 #include "BeanFactory.h"
 

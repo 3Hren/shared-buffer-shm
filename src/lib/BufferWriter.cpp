@@ -1,16 +1,19 @@
 #include "BufferWriter.h"
 
-#include "SharedBufferWriter.h"
+#include "config.hpp"
 
 #include <thread>
-#include <log4cxx/logger.h>
 
+#include "SharedBufferWriter.h"
+
+#ifdef SHARBUF_DEBUG
 #include <QDateTime>
-#include <QDebug>
+#endif
 
 BufferWriter::BufferWriter(SharedBufferWriter *sharedBufferWriter) :
     done(false),
-    sharedBufferWriter(sharedBufferWriter)
+    sharedBufferWriter(sharedBufferWriter),
+    log(log4cxx::Logger::getLogger("ru.diaprom.sharbuf.BufferWriter"))
 {
 }
 
@@ -25,8 +28,10 @@ void BufferWriter::start()
         while (!done) {
             std::shared_ptr<SignalPack> signalPack = queue.blockingPop();
             sharedBufferWriter->push(signalPack->timeStamp, signalPack->signalValues.data());
-            LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "Pushed signal pack with timestamp: " << QDateTime::fromMSecsSinceEpoch(signalPack->timeStamp).toString("ss,zzz").toStdString());
-        }
+#ifdef SHARBUF_DEBUG
+            LOG4CXX_DEBUG(log, "Pushed signal pack with timestamp: " << QDateTime::fromMSecsSinceEpoch(signalPack->timeStamp).toString("ss,zzz").toStdString());
+#endif
+        }        
     });
     this->consumer = std::move(consumer);
 }

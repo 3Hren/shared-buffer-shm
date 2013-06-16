@@ -40,11 +40,6 @@ void _Dumper::dump()
     boost::timer::cpu_timer timer;
     BuffersDump dump = reader->getBuffersDump();
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
-#ifdef DEBUG
-    for (const Buffer &buffer : dump.buffers) {
-        qDebug() << buffer;
-    }
-#endif
 }
 
 void _Dumper::readBuffer()

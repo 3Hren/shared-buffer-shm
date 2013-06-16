@@ -8,7 +8,6 @@ SET(HEADERS
     BufferWriter.h
     LowLevelBufferHandler.h
     QtBasedSharedMemory.h
-    SharedBufferException.h
     SharedBufferGlobal.h
     SharedBufferReader.h
     SharedBufferServer.h
@@ -20,6 +19,7 @@ SET(HEADERS
     domain/Internal.h
     domain/MetaData.h
     domain/SignalPack.h
+    exceptions/SharedBufferException.h
 )
 
 SET(MOC
@@ -83,6 +83,13 @@ INSTALL(
         domain/Buffer.h
         domain/SignalPack.h
     DESTINATION include/sharbuf/domain
+    COMPONENT development
+)
+
+INSTALL(
+    FILES
+        exceptions/SharedBufferException.h
+    DESTINATION include/sharbuf/exceptions
     COMPONENT development
 )
 

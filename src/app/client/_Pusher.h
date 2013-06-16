@@ -2,6 +2,8 @@
 
 #include <QObject>
 
+#include <log4cxx/logger.h>
+
 #include "SharedBufferWriter.h"
 #include "BufferWriter.h"
 
@@ -17,6 +19,7 @@ class _Pusher : QObject
     SharedMemory *sharedMemory;
     SharedBufferWriter *sharedBufferWriter;
     BufferWriter *writer;
+    log4cxx::LoggerPtr log;
 public:
     _Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent = 0);
     ~_Pusher();

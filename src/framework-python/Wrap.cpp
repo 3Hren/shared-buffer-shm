@@ -19,7 +19,6 @@ public:
     {
         reader.setSharedMemory(&memory);
         reader.setLowLevelBufferHandler(&handler);
-
     }
 
     bool isAttached() const {

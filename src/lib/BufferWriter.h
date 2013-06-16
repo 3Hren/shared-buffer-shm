@@ -3,6 +3,8 @@
 #include <atomic>
 #include <thread>
 
+#include <log4cxx/logger.h>
+
 #include "domain/SignalPack.h"
 #include <ThreadSafeQueue.h>
 
@@ -13,6 +15,7 @@ class BufferWriter
     std::atomic_bool done;
     ThreadSafeQueue<SignalPack> queue;
     SharedBufferWriter *sharedBufferWriter;
+    log4cxx::LoggerPtr log;
 public:
     BufferWriter(SharedBufferWriter *sharedBufferWriter);
     ~BufferWriter();

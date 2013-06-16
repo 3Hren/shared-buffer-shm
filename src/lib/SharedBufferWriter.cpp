@@ -1,7 +1,7 @@
 #include "SharedBufferWriter.h"
 
 #include "LowLevelBufferHandler.h"
-#include "SharedBufferException.h"
+#include "exceptions/SharedBufferException.h"
 
 void SharedBufferWriter::push(TimeStamp timestamp, const SignalValue *signalsPack) const
 {

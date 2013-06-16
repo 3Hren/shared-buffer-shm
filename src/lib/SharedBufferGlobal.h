@@ -1,8 +1,5 @@
 #pragma once
 
-#define DEBUG
-#undef DEBUG
-
 #include <QString>
 
 typedef quint32 BufferPos;

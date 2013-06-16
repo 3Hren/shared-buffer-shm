@@ -4,10 +4,7 @@
 
 #include "LowLevelBufferHandler.h"
 #include "SharedMemory.h"
-
-#include "SharedBufferException.h"
-
-#include <log4cxx/logger.h>
+#include "exceptions/SharedBufferException.h"
 
 void AbstractSharedBufferHandler::setLowLevelBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler)
 {
@@ -45,10 +42,6 @@ void AbstractSharedBufferHandler::attach(const QString &key)
         throw SharedBufferAlreadyAttachedException();
 
     sharedMemory->setKey(key);
-    if (!sharedMemory->attach(getAcessMode())) {
-        LOG4CXX_FATAL(log4cxx::Logger::getRootLogger(), "Shared memory segment attaching failed: " << sharedMemory->getErrorDescription().toStdString());
-        throw SharedBufferNotAttachedException(sharedMemory->getErrorDescription());
-    }
-
-    LOG4CXX_INFO(log4cxx::Logger::getRootLogger(), "Shared memory segment has been successfully attached");
+    if (!sharedMemory->attach(getAcessMode()))
+        throw SharedBufferNotAttachedException(sharedMemory->getErrorDescription());        
 }

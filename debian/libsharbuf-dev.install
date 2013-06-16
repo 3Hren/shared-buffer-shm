@@ -1,2 +1,3 @@
 usr/include/sharbuf/*.h
 usr/include/sharbuf/domain/*.h
+usr/include/sharbuf/exceptions/*.h

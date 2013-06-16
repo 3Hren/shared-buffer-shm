@@ -1,6 +1,8 @@
 #pragma once
 
 #include <QVector>
+
+#include "config.hpp"
 #include "SharedBufferGlobal.h"
 
 template<template<typename...> class Vector>
@@ -26,7 +28,7 @@ struct TypedBuffersDump {
 typedef TypedBuffer<QVector> Buffer;
 typedef TypedBuffersDump<QVector> BuffersDump;
 
-#ifdef DEBUG
+#ifdef SHARBUF_DEBUG
 #include <QDebug>
 #include <QStringList>
 inline QDebug operator <<(QDebug debug, const Buffer &buffer) {

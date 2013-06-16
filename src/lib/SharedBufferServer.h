@@ -1,6 +1,9 @@
 #pragma once
 
 #include <QObject>
+
+#include <log4cxx/logger.h>
+
 #include "SharedBufferGlobal.h"
 
 #include <QSharedMemory>
@@ -12,6 +15,7 @@ class SharedBufferServer : public QObject
     const BufferId buffersCount;
     const BufferPos bufferSize;
     QSharedMemory *shared;
+    log4cxx::LoggerPtr log;
 public:
     SharedBufferServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent = 0);
 
