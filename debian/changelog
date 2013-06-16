@@ -1,3 +1,10 @@
+sharbuf (0.3.2-1) unstable; urgency=low
+
+  * Настройки логгера добавлены в пакет
+  * Питоний фреймворк научился доставать состояние подключения к памяти
+
+ -- Evgeny Safronov <division494@gmail.com>  Sun, 16 Jun 2013 03:32:19 +0400
+
 sharbuf (0.3.0-1) unstable; urgency=low
 
   * Introducing python binding
