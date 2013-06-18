@@ -29,7 +29,12 @@ qt4_wrap_cpp(MOC_SOURCES ${MOC})
 
 FIND_PACKAGE(Threads)
 FIND_PACKAGE(Boost COMPONENTS ${BOOST_COMPONENTS} REQUIRED)
-INCLUDE_DIRECTORIES(../lib ${PYTHON_PATH} )
+INCLUDE_DIRECTORIES(
+    ../lib
+    ${PYTHON_PATH}
+    /usr/share/pyshared/numpy/core/include/numpy
+)
+
 ADD_LIBRARY(${PROJECT} SHARED
     ${HEADERS}
     ${SOURCES}
