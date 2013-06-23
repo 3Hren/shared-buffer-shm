@@ -37,8 +37,9 @@ public:
     }
 
     void getBuffer(BufferId bufferId, BufferId size, boost::python::numeric::array &array) const {
-        PyArrayObject *arr = (PyArrayObject*)PyArray_FROM_O(array.ptr());
-        float *data = reinterpret_cast<float*>(arr->data);
+        PyArrayObject *arr = (PyArrayObject *)PyArray_FROM_O(array.ptr());
+        Py_DECREF(arr);
+        float *data = reinterpret_cast<float *>(arr->data);
         TypedBuffer<std::vector> buf = reader.getBuffer<std::vector>(bufferId, size);
         std::copy(buf.values.begin(), buf.values.end(), data);
     }
