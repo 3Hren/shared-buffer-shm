@@ -1,3 +1,26 @@
+sharbuf (0.4.1-2) unstable; urgency=low
+
+  * Исправлена сборка
+
+ -- Evgeny Safronov <division494@gmail.com>  Sat, 29 Jun 2013 01:40:57 +0400
+
+sharbuf (0.4.1-1) unstable; urgency=low
+
+  * Добавлен питонячий пакет
+
+ -- Evgeny Safronov <division494@gmail.com>  Sat, 29 Jun 2013 01:11:34 +0400
+
+sharbuf (0.4.0-1) unstable; urgency=low
+
+  * Питоний фреймворк научился доставать состояние подключения к памяти
+  * Исправления
+  * Точки логгирования сгруппированы по своим классам (closed #2)
+  * Улучшение производительности питонячего биндинга
+  * Утечка памяти устранена (closed #5)
+  * Увеличена скорость копирования буфера в два раза
+
+ -- Evgeny Safronov <division494@gmail.com>  Sat, 29 Jun 2013 00:52:11 +0400
+
 sharbuf (0.3.3-1) unstable; urgency=low
 
   * Исправления

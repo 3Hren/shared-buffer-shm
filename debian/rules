@@ -2,8 +2,11 @@
 
 #export DH_VERBOSE=1
 
+DEB_PYTHON_SYSTEM=pycentral
+
 include /usr/share/cdbs/1/class/cmake.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
+include /usr/share/cdbs/1/class/python-distutils.mk
 
 install/libsharbuf::
 	install -d $(DEB_DESTDIR)usr/lib

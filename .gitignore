@@ -4,6 +4,7 @@ Makefile
 /bin/
 /build/
 /lib/
+/src/framework-python/sharbuf.egg-info/
 
 # [Build]
 debian/*
