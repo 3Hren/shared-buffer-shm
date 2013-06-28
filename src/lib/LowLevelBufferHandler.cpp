@@ -121,6 +121,11 @@ SignalValue *LowLevelBufferHandler::getRawBuffer(BufferId bufferId, const void *
     return buffer;
 }
 
+void LowLevelBufferHandler::parseRawBuffer(BufferId bufferId, BufferId count, const void *data, SignalValue *buffer) const
+{
+    parseBuffer(bufferId, count, data, buffer);
+}
+
 QVector<SignalValue> LowLevelBufferHandler::getBuffer(BufferId bufferId, const void *data) const
 {
     return getBuffer<QVector>(bufferId, data);

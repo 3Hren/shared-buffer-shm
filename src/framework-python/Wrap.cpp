@@ -2,46 +2,47 @@
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 #include <boost/python/numeric.hpp>
 
-#include "Python.h"
-#include "arrayobject.h"
+#include <Python.h>
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
 
 #include "QtBasedSharedMemory.h"
 #include "LowLevelBufferHandler.h"
 #include "SharedBufferReader.h"
 #include "SharedMemoryLocker.h"
 
-#include <QDebug>
-
 class BufferReader {
-    QtBasedSharedMemory memory;
-    LowLevelBufferHandler handler;
-    SharedBufferReader reader;
+    QtBasedSharedMemory *memory;
+    LowLevelBufferHandler *handler;
+    SharedBufferReader *reader;
 public:
     BufferReader(BufferId buffersCount, BufferPos bufferSize) :
-        handler(buffersCount, bufferSize)
+        memory(new QtBasedSharedMemory),
+        handler(new LowLevelBufferHandler(buffersCount, bufferSize)),
+        reader(new SharedBufferReader)
     {
-        reader.setSharedMemory(&memory);
-        reader.setLowLevelBufferHandler(&handler);
+        reader->setSharedMemory(memory);
+        reader->setLowLevelBufferHandler(handler);
     }
 
     bool isAttached() const {
-        return reader.isAttached();
+        return reader->isAttached();
     }
 
     void attach(const std::string &key) {
-        reader.attach(key.c_str());
+        reader->attach(key.c_str());
     }
 
     void getBuffer(BufferId bufferId, boost::python::numeric::array &array) const {
-        getBuffer(bufferId, handler.getBufferSize(), array);
+        getBuffer(bufferId, handler->getBufferSize(), array);
     }
 
     void getBuffer(BufferId bufferId, BufferId size, boost::python::numeric::array &array) const {
         PyArrayObject *arr = (PyArrayObject *)PyArray_FROM_O(array.ptr());
         Py_DECREF(arr);
-        float *data = reinterpret_cast<float *>(arr->data);
-        TypedBuffer<std::vector> buf = reader.getBuffer<std::vector>(bufferId, size);
-        std::copy(buf.values.begin(), buf.values.end(), data);
+        float *data = reinterpret_cast<float *>(PyArray_DATA(arr));
+        SharedMemoryLocker<SharedMemory> locker(memory);
+        handler->parseRawBuffer(bufferId, size, memory->constData(), data);
     }
 };
 

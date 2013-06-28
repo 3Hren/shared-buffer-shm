@@ -24,7 +24,7 @@ public:
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, void *data) const;
     virtual char *getRawBuffersDump(const void *data) const;
     virtual SignalValue *getRawBuffer(BufferId bufferId, const void *data) const;
-    //!@todo: void fillRawBuffer(BufferId bufferId, BufferId size, const void *data, SignalValue *buffer) const;
+    virtual void parseRawBuffer(BufferId bufferId, BufferId count, const void *data, SignalValue *buffer) const;
     virtual TimeStamp *getRawTimeStamps(const void *data) const;
 
     template<template<typename ...> class Vector>
