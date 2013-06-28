@@ -1,12 +1,20 @@
 #!/usr/bin/make -f
 
-#export DH_VERBOSE=1
-
-DEB_PYTHON_SYSTEM=pycentral
-
 include /usr/share/cdbs/1/class/cmake.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
+
+PYTHON_LIB_PATH := "$(shell python -c 'from distutils import sysconfig; print sysconfig.get_python_lib(),')"
+
+DEB_BUILD_PARALLEL = yes
+DEB_PARALLEL_JOBS ?= $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
+
+DEB_PYTHON_SYSTEM := pycentral
+DEB_PYTHON_MODULE_PACKAGES := sharbuf-framework-python
+export DH_PYCENTRAL=nomove
+
+DEB_PYTHON_INSTALL_ARGS_ALL = --install-layout=deb --install-lib=$(PYTHON_LIB_PATH)
 include /usr/share/cdbs/1/class/python-distutils.mk
+include /usr/share/cdbs/1/class/python-module.mk	
 
 install/libsharbuf::
 	install -d $(DEB_DESTDIR)usr/lib
