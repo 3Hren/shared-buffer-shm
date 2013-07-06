@@ -1,3 +1,15 @@
+sharbuf (0.4.1-4) unstable; urgency=low
+
+  * Исправление багов
+
+ -- Evgeny Safronov <division494@gmail.com>  Sun, 07 Jul 2013 02:37:13 +0400
+
+sharbuf (0.4.1-3) unstable; urgency=low
+
+  * Исправление багов
+
+ -- Evgeny Safronov <division494@gmail.com>  Sat, 06 Jul 2013 17:43:42 +0400
+
 sharbuf (0.4.1-2) unstable; urgency=low
 
   * Исправлена сборка

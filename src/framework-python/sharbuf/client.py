@@ -10,9 +10,9 @@ __author__ = 'EvgenySafronov <division494@gmail.com>'
 
 class SharedBufferClient(object):
     def __init__(self, key, bufferCount, bufferSize):
-        self.key = key
-        self.bufferCount = bufferCount
-        self.bufferSize = bufferSize
+        self.key = str(key)
+        self.bufferCount = int(bufferCount)
+        self.bufferSize = int(bufferSize)
         self.reader = BufferReader(self.bufferCount, self.bufferSize)
 
     def isConnected(self):
