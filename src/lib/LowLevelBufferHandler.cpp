@@ -37,6 +37,14 @@ quint32 LowLevelBufferHandler::getDumpLengthBytes() const
     return internal->getDumpLengthBytes();
 }
 
+MetaData LowLevelBufferHandler::getMetaData(void *data) const
+{
+    char *metaData = reinterpret_cast<char *>(data);
+    MetaData meta;
+    memcpy(&meta, metaData, internal->META_DATA_SIZE_BYTES);
+    return meta;
+}
+
 void *LowLevelBufferHandler::createStorage() const
 {
     const int length = getDataLengthBytes();

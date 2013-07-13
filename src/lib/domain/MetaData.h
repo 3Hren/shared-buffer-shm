@@ -5,9 +5,16 @@
 
 struct MetaDataHeader {
     BufferPos currentPos = 0;
-    quint32 clientCount = 0;
-    BufferPos bufferSize = 0;
     BufferId buffersCount = 0;
+    BufferPos bufferSize = 0;
+    quint32 clientCount = 0;
+
+    inline bool operator ==(const MetaDataHeader &other) const {
+        return currentPos == other.currentPos &&
+                buffersCount == other.buffersCount &&
+                bufferSize == other.bufferSize &&
+                clientCount == other.clientCount;
+    }
 };
 
 template<uint placeholderSize>

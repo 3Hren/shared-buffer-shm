@@ -1,8 +1,9 @@
 #pragma once
 
+#include <QVector>
+
 #include "SharedBufferGlobal.h"
 #include "domain/MetaData.h"
-#include <QVector>
 
 class LowLevelBufferHandler
 {
@@ -19,6 +20,8 @@ public:
 
     quint32 getDataLengthBytes() const;
     quint32 getDumpLengthBytes() const;
+
+    MetaData getMetaData(void *data) const;
 
     virtual void *createStorage() const;
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, void *data) const;

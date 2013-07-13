@@ -25,6 +25,17 @@ char *createStorage(BufferId BUFFERS_COUNT, BufferPos BUFFER_SIZE, BufferPos pos
     return storage;
 }
 
+char *createStorage(BufferId BUFFERS_COUNT, BufferPos BUFFER_SIZE, const MetaData &meta, SignalValue buffers[], QualityCode codes[], TimeStamp timeStamps[], int length) {
+    char *storage = new char[length];
+    memset(storage, 0, length);
+
+    memcpy(storage, &meta, sizeof(MetaData));
+    memcpy(storage + sizeof(MetaData), buffers, (BUFFERS_COUNT * BUFFER_SIZE) * sizeof(SignalValue));
+    memcpy(storage + sizeof(MetaData) + BUFFERS_COUNT * BUFFER_SIZE * sizeof(SignalValue), codes, BUFFERS_COUNT * sizeof(QualityCode));
+    memcpy(storage + sizeof(MetaData) + BUFFERS_COUNT * BUFFER_SIZE * sizeof(SignalValue) + BUFFERS_COUNT * sizeof(QualityCode), timeStamps, BUFFER_SIZE * sizeof(TimeStamp));
+    return storage;
+}
+
 TEST(LowLevelBufferHandler, Push) {
     static const BufferId BUFFERS_COUNT = 10;
     static const BufferPos BUFFER_SIZE = 4;
@@ -542,6 +553,31 @@ TEST(LowLevelBufferHandler, SetQualityThrowsExceptionWhenInvalidArgumentsIsSent)
     LowLevelBufferHandler manager(80, 256);
     EXPECT_THROW(manager.setQualityCode(-1, 1, 0), std::invalid_argument);
     EXPECT_THROW(manager.setQualityCode(80, 1, 0), std::invalid_argument);
+}
+
+TEST(LowLevelBufferHandler, GetMetaData) {
+    const BufferId BUFFERS_COUNT = 1;
+    const BufferPos BUFFER_SIZE = 1;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    MetaData meta;
+    meta.currentPos = 0;
+    meta.buffersCount = 1;
+    meta.bufferSize = 1;
+    meta.clientCount = 10;
+    SignalValue buffersDump[] = {0};
+    QualityCode qualityCodesDump[] = {0};
+    TimeStamp timeStampsDump[] = {0};
+
+    const int length = manager.getDataLengthBytes();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    meta,
+                                                    buffersDump,
+                                                    qualityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+
+    EXPECT_EQ(meta, manager.getMetaData(reinterpret_cast<void *>(storage.get())));
 }
 
 //! @note: Пригодится
