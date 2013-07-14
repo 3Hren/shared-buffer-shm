@@ -1,7 +1,9 @@
+#include <memory>
+
+#include <QTimer>
+
+#include "SharedMemoryLocker.h"
 #include "SharedBufferServer.h"
-
-#include <log4cxx/logger.h>
-
 #include "LowLevelBufferHandler.h"
 
 SharedBufferServer::SharedBufferServer(const QString &name, BufferId buffersCount, BufferPos bufferSize, QObject *parent) :
@@ -9,10 +11,19 @@ SharedBufferServer::SharedBufferServer(const QString &name, BufferId buffersCoun
     name(name),
     buffersCount(buffersCount),
     bufferSize(bufferSize),
+    handler(new LowLevelBufferHandler(buffersCount, bufferSize)),
+    shared(new QSharedMemory(name, this)),
+    refreshTimer(new QTimer(this)),
     log(log4cxx::Logger::getLogger("ru.diaprom.sharbuf.Server"))
 {
-    shared = new QSharedMemory(name, this);
+    refreshTimer->setInterval(1000);
+    connect(refreshTimer, SIGNAL(timeout()), SLOT(refreshState()));
     LOG4CXX_INFO(log, "Native key: " << shared->nativeKey().toStdString());
+}
+
+SharedBufferServer::~SharedBufferServer()
+{
+    delete handler;
 }
 
 void SharedBufferServer::execute()
@@ -23,11 +34,24 @@ void SharedBufferServer::execute()
     if (!isCreated)
         exit(1);
 
-    shared->lock();
-    void *data = shared->data();    
-    void *initialized = manager.createStorage();
-    memcpy(data, initialized, manager.getDataLengthBytes());
-    shared->unlock();
-    delete[] (char*)initialized;
+    SharedMemoryLocker<QSharedMemory> locker(shared);
+    void *data = shared->data();
+    std::unique_ptr<void> initialized(manager.createStorage());
+    memcpy(data, initialized.get(), manager.getDataLengthBytes());
     LOG4CXX_INFO(log, "Shared memory segment has been initialized with " << shared->size() << " bytes (" << shared->size() / 1024.0 / 1024.0 << " Mbytes)");
+
+    refreshTimer->start();
+}
+
+void SharedBufferServer::refreshState()
+{
+    SharedMemoryLocker<QSharedMemory> locker(shared);
+    MetaData meta = handler->getMetaData(shared->constData());
+    if (meta.clientCount > clientCount) {
+        LOG4CXX_INFO(log, "Client has been connected. Total clients: " << meta.clientCount);
+    } else if (meta.clientCount < clientCount) {
+        LOG4CXX_INFO(log, "Client has been disconnected. Total clients: " << meta.clientCount);
+    }
+
+    clientCount = meta.clientCount;
 }
