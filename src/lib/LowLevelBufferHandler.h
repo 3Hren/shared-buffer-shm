@@ -21,8 +21,8 @@ public:
     quint32 getDataLengthBytes() const;
     quint32 getDumpLengthBytes() const;
 
-    MetaData getMetaData(const void *data) const;
-    void setMetaData(const MetaData &meta, void *data) const;
+    virtual MetaData getMetaData(const void *data) const;
+    virtual void setMetaData(const MetaData &meta, void *data) const;
 
     virtual void *createStorage() const;
     virtual void push(TimeStamp timestamp, const SignalValue *signalsPack, void *data) const;

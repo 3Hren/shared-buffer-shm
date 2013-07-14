@@ -5,6 +5,9 @@
 class LowLevelBufferHandlerMock : public LowLevelBufferHandler {
 public:
     LowLevelBufferHandlerMock() : LowLevelBufferHandler(2, 4) {}
+    MOCK_CONST_METHOD1(getMetaData, MetaData(const void*));
+    MOCK_CONST_METHOD2(setMetaData, void(const MetaData&, void*));
+
     MOCK_CONST_METHOD0(createStorage, void*());
     MOCK_CONST_METHOD3(push, void(TimeStamp, const SignalValue*, void*));
     MOCK_CONST_METHOD1(getRawBuffersDump, char*(const void*));

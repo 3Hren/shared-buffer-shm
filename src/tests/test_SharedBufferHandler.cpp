@@ -10,6 +10,8 @@ protected:
     NiceMock<SharedMemoryMock> sharedMemory;
     NiceMock<LowLevelBufferHandlerMock> lowLevelBufferHandler;
     void SetUp() {
+        ON_CALL(lowLevelBufferHandler, getMetaData(_))
+                .WillByDefault(Return(MetaData()));
         ON_CALL(sharedMemory, isAttached())
                 .WillByDefault(Return(true));
         ON_CALL(sharedMemory, getErrorDescription())
@@ -46,12 +48,12 @@ TEST_F(SharedBufferWriterTest, CallsLowLevelBufferHandlerPushMethodWhenPushInvok
     EXPECT_CALL(lowLevelBufferHandler, push(timestamp, signalsPack, _))
             .Times(1);
     EXPECT_CALL(sharedMemory, lock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, data())
-            .Times(1)
-            .WillOnce(Return(nullptr));
+            .Times(2)
+            .WillRepeatedly(Return(nullptr));
     EXPECT_CALL(sharedMemory, unlock())
-            .Times(1);
+            .Times(2);
 
     writer.push(timestamp, signalsPack);
 }
@@ -96,12 +98,12 @@ protected:
 
 TEST_F(SharedBufferReaderTest, GetTimestamps) {
     EXPECT_CALL(sharedMemory, lock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, unlock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, constData())
-            .Times(1)
-            .WillOnce(Return(nullptr));
+            .Times(2)
+            .WillRepeatedly(Return(nullptr));
     EXPECT_CALL(lowLevelBufferHandler, getTimestamps(_))
             .Times(1)
             .WillOnce(Return(QVector<TimeStamp>({8, 7, 6, 5})));
@@ -111,12 +113,12 @@ TEST_F(SharedBufferReaderTest, GetTimestamps) {
 TEST_F(SharedBufferReaderTest, GetBuffersDump) {
     std::unique_ptr<char[]> data(new char[lowLevelBufferHandler.getDataLengthBytes()]);
     EXPECT_CALL(sharedMemory, lock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, unlock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, constData())
-            .Times(1)
-            .WillOnce(Return(data.get()));
+            .Times(2)
+            .WillRepeatedly(Return(data.get()));
 
     const BufferId count = lowLevelBufferHandler.getBuffersCount();
     EXPECT_CALL(lowLevelBufferHandler, getTimestamps(_))
@@ -134,12 +136,12 @@ TEST_F(SharedBufferReaderTest, GetBuffersDump) {
 
 TEST_F(SharedBufferReaderTest, GetQualityCode) {
     EXPECT_CALL(sharedMemory, lock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, unlock())
-            .Times(1);
+            .Times(2);
     EXPECT_CALL(sharedMemory, constData())
-            .Times(1)
-            .WillOnce(Return(nullptr));
+            .Times(2)
+            .WillRepeatedly(Return(nullptr));
     EXPECT_CALL(lowLevelBufferHandler, getQualityCode(0, _))
             .Times(1)
             .WillOnce(Return(512));

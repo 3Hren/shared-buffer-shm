@@ -580,6 +580,37 @@ TEST(LowLevelBufferHandler, GetMetaData) {
     EXPECT_EQ(meta, manager.getMetaData(reinterpret_cast<void *>(storage.get())));
 }
 
+TEST(LowLevelBufferHandler, SetMetaData) {
+    const BufferId BUFFERS_COUNT = 1;
+    const BufferPos BUFFER_SIZE = 1;
+    LowLevelBufferHandler manager(BUFFERS_COUNT, BUFFER_SIZE);
+
+    MetaData meta;
+    SignalValue buffersDump[] = {0};
+    QualityCode qualityCodesDump[] = {0};
+    TimeStamp timeStampsDump[] = {0};
+
+    const int length = manager.getDataLengthBytes();
+    boost::scoped_array<char> storage(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                    meta,
+                                                    buffersDump,
+                                                    qualityCodesDump,
+                                                    timeStampsDump,
+                                                    length));
+
+    MetaData metaActual;
+    metaActual.clientCount = 10;
+    manager.setMetaData(metaActual, reinterpret_cast<void *>(storage.get()));
+
+    boost::scoped_array<char> expected(createStorage(BUFFERS_COUNT, BUFFER_SIZE,
+                                                     metaActual,
+                                                     buffersDump,
+                                                     qualityCodesDump,
+                                                     timeStampsDump,
+                                                     length));
+    EXPECT_TRUE(0 == std::memcmp(expected.get(), storage.get(), length));
+}
+
 //! @note: Пригодится
 
 //for (int i = 0; i < length; ++i)
