@@ -14,7 +14,7 @@ protected:
     SharedMemory *sharedMemory;
 
 public:
-    virtual ~AbstractSharedBufferHandler() {}
+    virtual ~AbstractSharedBufferHandler();
 
     void setLowLevelBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler);
     void setSharedMemory(SharedMemory *sharedMemory);

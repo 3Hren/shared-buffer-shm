@@ -4,7 +4,18 @@
 
 #include "LowLevelBufferHandler.h"
 #include "SharedMemory.h"
+#include "SharedMemoryLocker.h"
 #include "exceptions/SharedBufferException.h"
+#include <QDebug>
+
+AbstractSharedBufferHandler::~AbstractSharedBufferHandler()
+{
+//    Decrease client count
+    SharedMemoryLocker<SharedMemory> lock(sharedMemory);
+    MetaData meta = lowLevelBufferHandler->getMetaData(sharedMemory->constData());
+    meta.clientCount--;
+    lowLevelBufferHandler->setMetaData(meta, sharedMemory->data());
+}
 
 void AbstractSharedBufferHandler::setLowLevelBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler)
 {
@@ -38,10 +49,17 @@ bool AbstractSharedBufferHandler::isAttached() const
 
 void AbstractSharedBufferHandler::attach(const QString &key)
 {
+    //! @todo: Add pointer check
     if (sharedMemory->isAttached())
         throw SharedBufferAlreadyAttachedException();
 
     sharedMemory->setKey(key);
     if (!sharedMemory->attach(getAcessMode()))
         throw SharedBufferNotAttachedException(sharedMemory->getErrorDescription());        
+
+    // Increase client count
+    SharedMemoryLocker<SharedMemory> lock(sharedMemory);
+    MetaData meta = lowLevelBufferHandler->getMetaData(sharedMemory->constData());
+    meta.clientCount++;
+    lowLevelBufferHandler->setMetaData(meta, sharedMemory->data());
 }
