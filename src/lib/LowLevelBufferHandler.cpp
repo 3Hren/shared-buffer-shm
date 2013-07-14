@@ -37,12 +37,18 @@ quint32 LowLevelBufferHandler::getDumpLengthBytes() const
     return internal->getDumpLengthBytes();
 }
 
-MetaData LowLevelBufferHandler::getMetaData(void *data) const
+MetaData LowLevelBufferHandler::getMetaData(const void *data) const
 {
-    char *metaData = reinterpret_cast<char *>(data);
+    const char *metaData = reinterpret_cast<const char *>(data);
     MetaData meta;
     memcpy(&meta, metaData, internal->META_DATA_SIZE_BYTES);
     return meta;
+}
+
+void LowLevelBufferHandler::setMetaData(const MetaData &meta, void *data) const
+{
+    char *metaData = reinterpret_cast<char *>(data);
+    memcpy(metaData, &meta, internal->META_DATA_SIZE_BYTES);
 }
 
 void *LowLevelBufferHandler::createStorage() const
