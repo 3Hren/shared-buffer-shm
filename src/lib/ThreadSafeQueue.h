@@ -4,6 +4,7 @@
 #include <queue>
 #include <condition_variable>
 #include <memory>
+#include <chrono>
 
 template<typename T>
 class ThreadSafeQueue
@@ -26,7 +27,7 @@ public:
         std::shared_ptr<T> value(std::make_shared<T>(std::move(queue.front())));
         queue.pop();
         return value;
-    }
+    }    
 
     bool tryPop(T &value) {
         std::lock_guard<std::mutex> lock(mutex);
@@ -36,6 +37,16 @@ public:
         value = std::move(queue.front());
         queue.pop();
         return true;
+    }
+
+    bool tryPop(T &value, const std::chrono::milliseconds &interval) {
+        std::unique_lock<std::mutex> lock(mutex);
+        if (queueNotEmptyCondition.wait_for(lock, interval, [this]{ return !queue.empty(); })) {
+            value = std::move(queue.front());
+            queue.pop();
+            return true;
+        }
+        return false;
     }
 
     bool isEmpty() const {
