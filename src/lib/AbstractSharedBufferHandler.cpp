@@ -16,13 +16,7 @@ AbstractSharedBufferHandler::AbstractSharedBufferHandler() :
 
 AbstractSharedBufferHandler::~AbstractSharedBufferHandler()
 {
-//    Decrease client count
-    if (sharedMemory && lowLevelBufferHandler) {
-        SharedMemoryLocker<SharedMemory> lock(sharedMemory);
-        MetaData meta = lowLevelBufferHandler->getMetaData(sharedMemory->constData());
-        meta.clientCount--;
-        lowLevelBufferHandler->setMetaData(meta, sharedMemory->data());
-    }
+    decreaseClientCount();
 }
 
 void AbstractSharedBufferHandler::setLowLevelBufferHandler(LowLevelBufferHandler *lowLevelBufferHandler)
@@ -57,7 +51,8 @@ bool AbstractSharedBufferHandler::isAttached() const
 
 void AbstractSharedBufferHandler::attach(const QString &key)
 {
-    //! @todo: Add pointer check
+    Q_ASSERT_X(sharedMemory && lowLevelBufferHandler, Q_FUNC_INFO, "Pointers must not be null");
+
     if (sharedMemory->isAttached())
         throw SharedBufferAlreadyAttachedException();
 
@@ -65,9 +60,23 @@ void AbstractSharedBufferHandler::attach(const QString &key)
     if (!sharedMemory->attach(getAcessMode()))
         throw SharedBufferNotAttachedException(sharedMemory->getErrorDescription());
 
-    // Increase client count
+    increaseClientCount();
+}
+
+void AbstractSharedBufferHandler::increaseClientCount()
+{
     SharedMemoryLocker<SharedMemory> lock(sharedMemory);
     MetaData meta = lowLevelBufferHandler->getMetaData(sharedMemory->constData());
     meta.clientCount++;
     lowLevelBufferHandler->setMetaData(meta, sharedMemory->data());
+}
+
+void AbstractSharedBufferHandler::decreaseClientCount()
+{
+    if (sharedMemory && lowLevelBufferHandler) {
+        SharedMemoryLocker<SharedMemory> lock(sharedMemory);
+        MetaData meta = lowLevelBufferHandler->getMetaData(sharedMemory->constData());
+        meta.clientCount--;
+        lowLevelBufferHandler->setMetaData(meta, sharedMemory->data());
+    }
 }

@@ -30,4 +30,8 @@ public:
 
 protected:
     virtual SharedMemory::AccessMode getAcessMode() const = 0;
+
+private:
+    void increaseClientCount();
+    void decreaseClientCount();
 };
