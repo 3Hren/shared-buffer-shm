@@ -38,7 +38,10 @@ _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSiz
 
 _Pusher::~_Pusher()
 {
+    delete writer;
+    delete sharedBufferWriter;
     delete sharedMemory;
+    delete lowLevelBufferHandler;
 }
 
 void _Pusher::execute()
