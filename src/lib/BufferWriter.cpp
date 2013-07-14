@@ -20,18 +20,23 @@ BufferWriter::BufferWriter(SharedBufferWriter *sharedBufferWriter) :
 BufferWriter::~BufferWriter()
 {
     done = true;
+    consumer.join();
 }
 
 void BufferWriter::start()
 {
     std::thread consumer([this]{
+        std::chrono::milliseconds timeout(100);
         while (!done) {
-            std::shared_ptr<SignalPack> signalPack = queue.blockingPop();
-            sharedBufferWriter->push(signalPack->timeStamp, signalPack->signalValues.data());
+            SignalPack signalPack;
+            if (queue.tryPop(signalPack, timeout)) {
+                sharedBufferWriter->push(signalPack.timeStamp, signalPack.signalValues.data());
 #ifdef SHARBUF_DEBUG
-            LOG4CXX_DEBUG(log, "Pushed signal pack with timestamp: " << QDateTime::fromMSecsSinceEpoch(signalPack->timeStamp).toString("ss,zzz").toStdString());
+                LOG4CXX_DEBUG(log, "Pushed signal pack with timestamp: " << QDateTime::fromMSecsSinceEpoch(signalPack.timeStamp).toString("ss,zzz").toStdString());
 #endif
-        }        
+            }
+        }
+        LOG4CXX_DEBUG(log, "Consumer thread has been stopped");
     });
     this->consumer = std::move(consumer);
 }
