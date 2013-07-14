@@ -6,7 +6,6 @@
 #include "SharedMemory.h"
 #include "SharedMemoryLocker.h"
 #include "exceptions/SharedBufferException.h"
-#include <QDebug>
 
 AbstractSharedBufferHandler::AbstractSharedBufferHandler() :
     sharedMemory(0),
