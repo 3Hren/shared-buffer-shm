@@ -27,7 +27,6 @@ Dumper::~Dumper()
 
 void Dumper::execute()
 {
-    //readBuffer();
     dump();
 }
 

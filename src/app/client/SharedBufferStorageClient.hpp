@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+
 #include "SharedBufferGlobal.h"
 
 class SharedMemory;
@@ -21,6 +22,6 @@ public:
 
     void connectAndRun();
 
-protected:
-    Q_SLOT virtual void execute() = 0;
+protected slots:
+    virtual void execute() = 0;
 };

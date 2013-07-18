@@ -21,6 +21,8 @@ public:
     BufferWriter(SharedBufferWriter *sharedBufferWriter);
     ~BufferWriter();
 
+    bool isRunning() const;
+
     void start();
 
     void push(TimeStamp timeStamp, SignalValue *signalValues);

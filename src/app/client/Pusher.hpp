@@ -6,17 +6,12 @@
 
 #include "SharedBufferWriter.h"
 #include "BufferWriter.h"
+#include "SharedBufferStorageClient.hpp"
 
 class SharedMemory;
-class Pusher : QObject
+class Pusher : public SharedBufferStorageClient
 {
     Q_OBJECT
-    BufferId buffersCount;
-    BufferPos bufferSize;
-    int timeout;
-
-    LowLevelBufferHandler *lowLevelBufferHandler;
-    SharedMemory *sharedMemory;
     SharedBufferWriter *sharedBufferWriter;
     BufferWriter *writer;
     log4cxx::LoggerPtr log;
@@ -24,8 +19,9 @@ public:
     Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent = 0);
     ~Pusher();
 
+protected slots:
     void execute();
 
 private:
-    Q_SLOT void push();
+    void push();
 };

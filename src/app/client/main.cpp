@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     BeanFactory::registerFactory(factory.get());
     if (type == 1){
         Pusher pusher(name, buffersCount, bufferSize, timeout);
-        pusher.execute();
+        pusher.connectAndRun();
         return app.exec();
     } else if (type == 2) {
         Dumper dumper(name, buffersCount, bufferSize, timeout);

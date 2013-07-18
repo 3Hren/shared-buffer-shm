@@ -6,12 +6,13 @@
 #include <QDateTime>
 #endif
 
+#include "domain/SignalPack.h"
+#include "exceptions/SharedBufferException.h"
 #include "BufferWriter.h"
 #include "SharedBufferWriter.h"
-#include "domain/SignalPack.h"
 
 BufferWriter::BufferWriter(SharedBufferWriter *sharedBufferWriter) :
-    done(false),
+    done(true),
     sharedBufferWriter(sharedBufferWriter),
     log(log4cxx::Logger::getLogger("ru.diaprom.sharbuf.BufferWriter"))
 {
@@ -23,8 +24,16 @@ BufferWriter::~BufferWriter()
     consumer.join();
 }
 
+bool BufferWriter::isRunning() const {
+    return !done;
+}
+
 void BufferWriter::start()
 {
+    if (isRunning())
+        throw IllegalStateException("Writer is already running");
+    done = false;
+
     std::thread consumer([this]{
         std::chrono::milliseconds timeout(100);
         while (!done) {

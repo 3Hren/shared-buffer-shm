@@ -20,3 +20,4 @@ public:
 };
 
 typedef std::invalid_argument IllegalValueException;
+typedef std::invalid_argument IllegalStateException;
