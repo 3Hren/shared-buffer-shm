@@ -9,7 +9,7 @@
 #include "LowLevelBufferHandler.h"
 #include "Pusher.hpp"
 
-_Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
+Pusher::Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     QObject(parent),
     buffersCount(buffersCount),
     bufferSize(bufferSize),
@@ -35,7 +35,7 @@ _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSiz
     writer->start();
 }
 
-_Pusher::~_Pusher()
+Pusher::~Pusher()
 {
     delete writer;
     delete sharedBufferWriter;
@@ -43,12 +43,12 @@ _Pusher::~_Pusher()
     delete lowLevelBufferHandler;
 }
 
-void _Pusher::execute()
+void Pusher::execute()
 {
     push();
 }
 
-void _Pusher::push()
+void Pusher::push()
 {
     static int counter = 0;
     counter++;

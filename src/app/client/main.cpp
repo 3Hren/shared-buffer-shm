@@ -52,11 +52,11 @@ int main(int argc, char **argv) {
     boost::scoped_ptr<BeanFactory>factory(new BeanFactory());
     BeanFactory::registerFactory(factory.get());
     if (type == 1){
-        _Pusher pusher(name, buffersCount, bufferSize, timeout);
+        Pusher pusher(name, buffersCount, bufferSize, timeout);
         pusher.execute();
         return app.exec();
     } else if (type == 2) {
-        _Dumper dumper(name, buffersCount, bufferSize, timeout);
+        Dumper dumper(name, buffersCount, bufferSize, timeout);
         dumper.connectAndRun();
         return app.exec();
     }

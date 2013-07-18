@@ -12,7 +12,7 @@
 #include "SharedBufferReader.h"
 #include "Dumper.hpp"
 
-_Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
+Dumper::Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent),
     reader(new SharedBufferReader)
 {
@@ -20,18 +20,18 @@ _Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSiz
     reader->setSharedMemory(shared);
 }
 
-_Dumper::~_Dumper()
+Dumper::~Dumper()
 {
     delete reader;
 }
 
-void _Dumper::execute()
+void Dumper::execute()
 {
     //readBuffer();
     dump();
 }
 
-void _Dumper::dump()
+void Dumper::dump()
 {
     QTimer::singleShot(timeout, this, SLOT(execute()));
     static int counter = 0;
@@ -42,7 +42,7 @@ void _Dumper::dump()
     LOG4CXX_DEBUG(log4cxx::Logger::getRootLogger(), "#" << counter << ". Dumped " << buffersCount * bufferSize << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
 }
 
-void _Dumper::readBuffer()
+void Dumper::readBuffer()
 {
     QTimer::singleShot(timeout, this, SLOT(execute()));
     static int counter = 0;
