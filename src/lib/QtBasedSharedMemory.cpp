@@ -1,10 +1,10 @@
-#include "QtBasedSharedMemory.h"
-
 #include <QSharedMemory>
+
+#include "QtBasedSharedMemory.h"
 
 QtBasedSharedMemory::QtBasedSharedMemory() :
     sharedMemory(new QSharedMemory)
-{    
+{
 }
 
 QtBasedSharedMemory::~QtBasedSharedMemory()
@@ -12,7 +12,7 @@ QtBasedSharedMemory::~QtBasedSharedMemory()
     delete sharedMemory;
 }
 
-bool QtBasedSharedMemory::create(int size, SharedMemory::AccessMode mode)
+bool QtBasedSharedMemory::create(int size, AccessMode mode)
 {
     return sharedMemory->create(size, static_cast<QSharedMemory::AccessMode>(mode));
 }
@@ -22,7 +22,7 @@ int QtBasedSharedMemory::size() const
     return sharedMemory->size();
 }
 
-bool QtBasedSharedMemory::attach(SharedMemory::AccessMode mode)
+bool QtBasedSharedMemory::attach(AccessMode mode)
 {
     return sharedMemory->attach(static_cast<QSharedMemory::AccessMode>(mode));
 }

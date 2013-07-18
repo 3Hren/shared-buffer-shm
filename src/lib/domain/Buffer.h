@@ -25,9 +25,6 @@ struct TypedBuffersDump {
     }
 };
 
-typedef TypedBuffer<QVector> Buffer;
-typedef TypedBuffersDump<QVector> BuffersDump;
-
 #ifdef SHARBUF_DEBUG
 #include <QDebug>
 #include <QStringList>

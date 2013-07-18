@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdexcept>
+
 #include <QString>
 
 class AttachException : public std::runtime_error {

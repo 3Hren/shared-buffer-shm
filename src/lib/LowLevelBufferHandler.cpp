@@ -1,9 +1,8 @@
 #include "LowLevelBufferHandler.h"
 
+#include "domain/MetaData.h"
 #include "domain/Internal.h"
 #include "exceptions/SharedBufferException.h"
-
-#include <QDebug>
 
 LowLevelBufferHandler::LowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize) :
     buffersCount(buffersCount),
@@ -85,7 +84,7 @@ void LowLevelBufferHandler::push(TimeStamp timestamp, const SignalValue *signals
 }
 
 char *LowLevelBufferHandler::getRawBuffersDump(const void *data) const
-{        
+{
     const char *metaData = reinterpret_cast<const char *>(data);
     const char *buffersData = metaData + internal->META_DATA_SIZE_BYTES;
     const char *qualityData = buffersData + internal->BUFFERS_DATA_SIZE_BYTES;

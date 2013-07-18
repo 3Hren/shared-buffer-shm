@@ -1,6 +1,7 @@
 #include "SharedBufferWriter.h"
 
 #include "LowLevelBufferHandler.h"
+#include "SharedMemory.h"
 #include "exceptions/SharedBufferException.h"
 
 void SharedBufferWriter::push(TimeStamp timestamp, const SignalValue *signalsPack) const
@@ -13,7 +14,7 @@ void SharedBufferWriter::push(TimeStamp timestamp, const SignalValue *signalsPac
     sharedMemory->unlock();
 }
 
-SharedMemory::AccessMode SharedBufferWriter::getAcessMode() const
+AccessMode SharedBufferWriter::getAcessMode() const
 {
-    return SharedMemory::AccessMode::ReadWrite;
+    return AccessMode::ReadWrite;
 }

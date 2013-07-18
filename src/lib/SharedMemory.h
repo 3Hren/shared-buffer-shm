@@ -2,14 +2,11 @@
 
 #include <QString>
 
+#include "domain/Memory.hpp"
+
 class SharedMemory
 {
 public:
-    enum class AccessMode {
-        ReadOnly = 0,
-        ReadWrite = 1
-    };
-
     virtual ~SharedMemory() {}
 
     virtual bool create(int size, AccessMode mode = AccessMode::ReadWrite) = 0;

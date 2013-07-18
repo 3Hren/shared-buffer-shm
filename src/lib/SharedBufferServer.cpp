@@ -2,6 +2,7 @@
 
 #include <QTimer>
 
+#include "domain/MetaData.h"
 #include "SharedMemoryLocker.h"
 #include "SharedBufferServer.h"
 #include "LowLevelBufferHandler.h"

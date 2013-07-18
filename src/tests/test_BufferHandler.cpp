@@ -1,10 +1,13 @@
-#include "Global.h"
-#include "LowLevelBufferHandler.h"
+#include <cstring>
+#include <stdexcept>
 
 #include <boost/shared_array.hpp>
 #include <boost/scoped_array.hpp>
-#include <cstring>
-#include <stdexcept>
+
+#include "domain/MetaData.h"
+#include "LowLevelBufferHandler.h"
+
+#include "Global.h"
 
 TEST(LowLevelBufferHandler, InitializationConstructor) {
     LowLevelBufferHandler manager(64, 1024);

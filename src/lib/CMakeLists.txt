@@ -16,6 +16,7 @@ SET(HEADERS
     SharedMemoryLocker.h
     ThreadSafeQueue.h
     domain/Buffer.h
+    domain/Memory.hpp
     domain/Internal.h
     domain/MetaData.h
     domain/SignalPack.h

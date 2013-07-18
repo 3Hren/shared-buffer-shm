@@ -1,10 +1,11 @@
-#include "SharedBufferReader.h"
-
 #include <memory>
 #include <cstring>
 
+#include "domain/Buffer.h"
 #include "LowLevelBufferHandler.h"
+#include "SharedMemory.h"
 #include "SharedMemoryLocker.h"
+#include "SharedBufferReader.h"
 
 template<template<typename...> class Vector>
 TypedBuffer<Vector> SharedBufferReader::getBuffer(BufferId bufferId) const
@@ -31,7 +32,7 @@ BuffersDump SharedBufferReader::getBuffersDump() const
 
     sharedMemory->lock();
     std::memcpy(copy.get(), sharedMemory->constData(), length);
-    sharedMemory->unlock();        
+    sharedMemory->unlock();
 
     const BufferId count = lowLevelBufferHandler->getBuffersCount();
     BuffersDump dump;
@@ -62,9 +63,10 @@ QualityCode SharedBufferReader::getQualityCode(BufferId bufferId) const
     return qualityCode;
 }
 
-SharedMemory::AccessMode SharedBufferReader::getAcessMode() const
+//! @todo: Over here!
+AccessMode SharedBufferReader::getAcessMode() const
 {
-    return SharedMemory::AccessMode::ReadOnly;
+    return AccessMode::ReadOnly;
 }
 
 template TypedBuffer<QVector> SharedBufferReader::getBuffer<QVector>(BufferId bufferId) const;

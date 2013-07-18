@@ -1,7 +1,8 @@
 #pragma once
 
-#include "SharedBufferGlobal.h"
 #include <cstring>
+
+#include "SharedBufferGlobal.h"
 
 struct MetaDataHeader {
     BufferPos currentPos = 0;

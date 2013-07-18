@@ -3,8 +3,8 @@
 #include <QVector>
 
 #include "SharedBufferGlobal.h"
-#include "domain/MetaData.h"
 
+struct MetaData;
 class LowLevelBufferHandler
 {
     const BufferId buffersCount;

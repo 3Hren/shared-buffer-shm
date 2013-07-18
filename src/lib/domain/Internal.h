@@ -1,8 +1,8 @@
 #pragma once
 
 #include "SharedBufferGlobal.h"
-#include "domain/MetaData.h"
 
+struct MetaData;
 struct Internal {
     const quint16 META_DATA_SIZE_BYTES;
     const quint32 BUFFER_DATA_SIZE_BYTES;

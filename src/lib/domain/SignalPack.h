@@ -2,8 +2,6 @@
 
 #include "SharedBufferGlobal.h"
 
-#include <vector>
-
 template<template<typename ...> class Vector>
 struct SignalPackType {
     TimeStamp timeStamp;

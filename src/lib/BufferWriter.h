@@ -5,9 +5,10 @@
 
 #include <log4cxx/logger.h>
 
-#include "domain/SignalPack.h"
+#include "SharedBufferGlobal.h"
 #include <ThreadSafeQueue.h>
 
+struct SignalPack;
 class SharedBufferWriter;
 class BufferWriter
 {

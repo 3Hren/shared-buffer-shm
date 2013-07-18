@@ -10,3 +10,10 @@ typedef quint16 QualityCode;
 
 static_assert(static_cast<BufferId>(-1) > 0, "BufferId must be unsigned");
 static_assert(sizeof(BufferPos) == sizeof(SignalValue), "sizeof(BufferPos) must be equal sizeof(SignalValue) because of memcopy operations");
+
+template<template<typename...> class Vector>
+struct TypedBuffer;
+template<template<typename...> class Vector>
+struct TypedBuffersDump;
+typedef TypedBuffer<QVector> Buffer;
+typedef TypedBuffersDump<QVector> BuffersDump;

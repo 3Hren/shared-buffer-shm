@@ -1,8 +1,8 @@
 #pragma once
 
-#include "SharedBufferGlobal.h"
-
 #include <QAtomicPointer>
+
+#include "SharedBufferGlobal.h"
 
 class SharedMemory;
 class LowLevelBufferHandler;
@@ -16,5 +16,5 @@ public:
     static void registerFactory(BeanFactory *factory);
 
     virtual SharedMemory *createSharedMemoryBean() const;
-    virtual LowLevelBufferHandler *createLowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize) const;    
+    virtual LowLevelBufferHandler *createLowLevelBufferHandler(BufferId buffersCount, BufferPos bufferSize) const;
 };

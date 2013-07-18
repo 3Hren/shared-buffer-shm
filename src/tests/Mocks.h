@@ -1,5 +1,9 @@
 #pragma once
 
+#include "domain/MetaData.h"
+#include "domain/Buffer.h"
+#include "SharedMemory.h"
+
 #include "Global.h"
 
 class LowLevelBufferHandlerMock : public LowLevelBufferHandler {

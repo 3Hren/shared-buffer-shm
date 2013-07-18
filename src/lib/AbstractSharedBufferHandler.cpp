@@ -5,6 +5,7 @@
 #include "LowLevelBufferHandler.h"
 #include "SharedMemory.h"
 #include "SharedMemoryLocker.h"
+#include "domain/MetaData.h"
 #include "exceptions/SharedBufferException.h"
 
 AbstractSharedBufferHandler::AbstractSharedBufferHandler() :

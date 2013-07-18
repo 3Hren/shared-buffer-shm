@@ -3,8 +3,9 @@
 #include <log4cxx/logger.h>
 
 #include "SharedBufferGlobal.h"
-#include "SharedMemory.h"
+#include "domain/Memory.hpp"
 
+class SharedMemory;
 class LowLevelBufferHandler;
 class AbstractSharedBufferHandler
 {
@@ -29,7 +30,7 @@ public:
     void attach(const QString &key);
 
 protected:
-    virtual SharedMemory::AccessMode getAcessMode() const = 0;
+    virtual AccessMode getAcessMode() const = 0;
 
 private:
     void increaseClientCount();

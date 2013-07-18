@@ -1,14 +1,14 @@
-#include "BufferWriter.h"
-
 #include "config.hpp"
 
 #include <thread>
 
-#include "SharedBufferWriter.h"
-
 #ifdef SHARBUF_DEBUG
 #include <QDateTime>
 #endif
+
+#include "BufferWriter.h"
+#include "SharedBufferWriter.h"
+#include "domain/SignalPack.h"
 
 BufferWriter::BufferWriter(SharedBufferWriter *sharedBufferWriter) :
     done(false),

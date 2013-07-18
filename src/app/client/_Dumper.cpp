@@ -1,21 +1,21 @@
-#include "_Dumper.h"
-
-#include "LowLevelBufferHandler.h"
-#include "SharedBufferReader.h"
+#include <boost/timer/timer.hpp>
 
 #include <log4cxx/logger.h>
-#include <boost/timer/timer.hpp>
 
 #include <QTimer>
 #include <QDateTime>
 #include <QCoreApplication>
-
 #include <QDebug>
+
+#include "domain/Buffer.h"
+#include "LowLevelBufferHandler.h"
+#include "SharedBufferReader.h"
+#include "_Dumper.h"
 
 _Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     _SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent),
     reader(new SharedBufferReader)
-{    
+{
     reader->setLowLevelBufferHandler(manager);
     reader->setSharedMemory(shared);
 }

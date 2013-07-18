@@ -6,6 +6,7 @@
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 
+#include "domain/Buffer.h"
 #include "QtBasedSharedMemory.h"
 #include "LowLevelBufferHandler.h"
 #include "SharedBufferReader.h"
@@ -59,7 +60,7 @@ BOOST_PYTHON_MODULE(libpysharbuf) {
             .add_property("values", make_getter(&TypedBuffer<std::vector>::values), make_setter(&TypedBuffer<std::vector>::values))
             .add_property("quality", make_getter(&TypedBuffer<std::vector>::quality), make_setter(&TypedBuffer<std::vector>::quality));
 
-    class_<BufferReader>("BufferReader", init<BufferId, BufferPos>(args("buffersCount", "bufferSize")))            
+    class_<BufferReader>("BufferReader", init<BufferId, BufferPos>(args("buffersCount", "bufferSize")))
             .def("isAttached", &BufferReader::isAttached)
             .def("attach", &BufferReader::attach, args("key"))
             .def("getBuffer", static_cast<void (BufferReader::*)(BufferId, boost::python::numeric::array&) const>(&BufferReader::getBuffer), args("bufferId", "array"))
