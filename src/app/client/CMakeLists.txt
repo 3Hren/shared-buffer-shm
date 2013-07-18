@@ -3,24 +3,24 @@ SET(PROJECT sharbuf-client)
 
 SET(UTILS_PATH ../../utils)
 SET(HEADERS
-    _Pusher.h
-    _Dumper.h
-    _SharedBufferStorageClient.h
+    Pusher.hpp
+    Dumper.hpp
+    SharedBufferStorageClient.hpp
     ${UTILS_PATH}/OptionPrinter.h
     ${UTILS_PATH}/CustomOptionDescription.h
 )
 
 SET(MOC
-    _Pusher.h
-    _Dumper.h
-    _SharedBufferStorageClient.h
+    Pusher.hpp
+    Dumper.hpp
+    SharedBufferStorageClient.hpp
 )
 
 SET(SOURCES
     main.cpp
-    _Pusher.cpp
-    _Dumper.cpp
-    _SharedBufferStorageClient.cpp
+    Pusher.cpp
+    Dumper.cpp
+    SharedBufferStorageClient.cpp
     ${UTILS_PATH}/OptionPrinter.cpp
     ${UTILS_PATH}/CustomOptionDescription.cpp
 )

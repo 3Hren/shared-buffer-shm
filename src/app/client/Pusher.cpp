@@ -1,14 +1,13 @@
-#include "_Pusher.h"
-
 #include <boost/timer/timer.hpp>
 #include <boost/scoped_array.hpp>
 
 #include <QTimer>
 #include <QDateTime>
 
-#include "LowLevelBufferHandler.h"
-#include "QtBasedSharedMemory.h"
 #include "exceptions/SharedBufferException.h"
+#include "QtBasedSharedMemory.h"
+#include "LowLevelBufferHandler.h"
+#include "Pusher.hpp"
 
 _Pusher::_Pusher(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
     QObject(parent),
@@ -50,7 +49,7 @@ void _Pusher::execute()
 }
 
 void _Pusher::push()
-{    
+{
     static int counter = 0;
     counter++;
     boost::scoped_array<SignalValue>data(new SignalValue[buffersCount]);

@@ -1,3 +1,5 @@
+#include "config.hpp"
+
 #include <signal.h>
 
 #include <boost/scoped_ptr.hpp>
@@ -8,10 +10,9 @@
 #include <QCoreApplication>
 #include <QSettings>
 
-#include "_Pusher.h"
-#include "_Dumper.h"
 #include "BeanFactory.h"
-#include "config.hpp"
+#include "Pusher.hpp"
+#include "Dumper.hpp"
 
 int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);

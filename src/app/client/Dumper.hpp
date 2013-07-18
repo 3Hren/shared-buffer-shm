@@ -1,9 +1,9 @@
 #pragma once
 
-#include "_SharedBufferStorageClient.h"
+#include "SharedBufferStorageClient.hpp"
 
 class SharedBufferReader;
-class _Dumper : public _SharedBufferStorageClient
+class _Dumper : public SharedBufferStorageClient
 {
     Q_OBJECT
     SharedBufferReader *reader;

@@ -10,10 +10,10 @@
 #include "domain/Buffer.h"
 #include "LowLevelBufferHandler.h"
 #include "SharedBufferReader.h"
-#include "_Dumper.h"
+#include "Dumper.hpp"
 
 _Dumper::_Dumper(const QString &name, BufferId buffersCount, BufferPos bufferSize, int timeout, QObject *parent) :
-    _SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent),
+    SharedBufferStorageClient(name, buffersCount, bufferSize, timeout, parent),
     reader(new SharedBufferReader)
 {
     reader->setLowLevelBufferHandler(manager);
