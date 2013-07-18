@@ -1,5 +1,4 @@
-#include <boost/timer/timer.hpp>
-#include <boost/scoped_array.hpp>
+#include <chrono>
 
 #include <QTimer>
 #include <QDateTime>
@@ -40,11 +39,13 @@ void Pusher::push()
 
     static int counter = 0;
     counter++;
-    boost::scoped_array<SignalValue>data(new SignalValue[buffersCount]);
+    std::unique_ptr<SignalValue[]>data(new SignalValue[buffersCount]);
     for (BufferId i = 0; i < buffersCount; ++i)
         data[i] = counter;
 
-    boost::timer::cpu_timer timer;
+    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     writer->push(QDateTime::currentDateTime().toMSecsSinceEpoch(), data.get());
-    LOG4CXX_DEBUG(log, "#" << counter << ". Pushed to queue " << buffersCount << " values in " << timer.elapsed().wall / 1.0e6 << " ms");
+    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> time_span = std::chrono::duration_cast<std::chrono::duration<double>>(t2 - t1);
+    LOG4CXX_DEBUG(log, "#" << counter << ". Pushed to queue " << buffersCount << " values in " << time_span.count() * 1000 << " ms");
 }
