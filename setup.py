@@ -7,7 +7,7 @@ setup(
         'sharbuf',
     ],
     package_dir={'': 'src/framework-python'},
-    url='www.diaprom.ru',
+    url='',
     license='BSD',
     author='Evgeny Safronov',
     author_email='division494@gmail.com',
